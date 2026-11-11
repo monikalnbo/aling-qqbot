@@ -1,0 +1,4 @@
+sent: private /help
+--- captured 1 send_* frame(s) ---
+[1] t=  1.29s (+1.29s) action=send_private_msg target=123456 text='AstrBot v4.29.4(WebUI: v4.29.4)\n/name - Set display name for current UMO\n/new - Create a new conversation.\n/provider - View or switch LLM Provider\n/reset - Clear the context of the current conversation.\n/sid - Get session ID and other related information\n/stats - Show token usage statistics for the current conversation\n/stop - Stop agent execution'
+total wall time to last send: 1.29s

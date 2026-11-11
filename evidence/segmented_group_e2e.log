@@ -1,0 +1,6 @@
+sent: group@ 阿凌在吗，说说明天天气怎么样
+--- captured 3 send_* frame(s) ---
+[1] t=  5.81s (+5.81s) action=send_group_msg target=555111 text='[at:222333] \n（愣了一下，坐起来）哎？换话题了？总算正常了。'
+[2] t=  6.56s (+0.74s) action=send_group_msg target=555111 text='（挠头）天气我可查不了，我又不是天气预报，杂口杂口。'
+[3] t=  7.10s (+0.54s) action=send_group_msg target=555111 text='你自己不会搜啊。'
+total wall time to last send: 7.10s

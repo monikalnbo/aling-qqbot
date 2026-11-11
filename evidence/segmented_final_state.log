@@ -1,0 +1,7 @@
+segmented_reply: {"enable": true, "only_llm_result": true, "interval_method": "random", "interval": "0.5,1.2", "log_base": 2.6, "words_count_threshold": 500, "split_mode": "regex", "regex": "(?s).*?\\n{2,}|.*?[。？！]+|.+$", "split_words": ["。", "？", "！", "~", "…"], "content_cleanup_rule": ""}
+ignore_bot_self_message: True
+admins_id: ['astrbot', '<你的管理员QQ号>']
+persona_id: aling
+wake_prefix: ['/'] unique_session: False
+identifier: True group_name_display: True
+provider key: [{'id': 'deepseek-chat', 'provider_source_id': 'deepseek-chat_source', 'enable': True, 'model': 'deepseek-chat', 'modalities': [], 'custom_extra_body': {}, 'api_base': 'https://api.deepseek.com/v1', 'key': ['$DEEPSEEK_API_KEY']}]

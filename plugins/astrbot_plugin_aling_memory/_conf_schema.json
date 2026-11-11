@@ -1,0 +1,66 @@
+{
+  "enable_identity": {
+    "description": "身份锚点",
+    "type": "bool",
+    "default": true,
+    "hint": "在每条消息的 system_reminder 里补 unified_id（平台:类型:会话:QQ号）与身份注记，QQ 号是唯一稳定锚点"
+  },
+  "short_term_max_turns": {
+    "description": "短期：上下文最多保留轮数",
+    "type": "int",
+    "default": 12,
+    "hint": "超过后裁掉最旧的整轮（保留 system 与人设），上下文条数恒定封顶；默认 12 轮"
+  },
+  "mid_term_enable": {
+    "description": "中期：会话摘要",
+    "type": "bool",
+    "default": true,
+    "hint": "当短期窗口即将裁掉旧轮或会话空闲超时，把旧内容压成摘要，按 群号/私聊QQ号 归档"
+  },
+  "mid_term_keep_turns": {
+    "description": "中期：保留最近几轮原文",
+    "type": "int",
+    "default": 6,
+    "hint": "摘要时最近这么多轮不压，保证衔接"
+  },
+  "mid_term_idle_seconds": {
+    "description": "中期：空闲多久后压缩",
+    "type": "int",
+    "default": 1800,
+    "hint": "会话空闲超过该秒数，下一条消息到来前先把旧对话压成摘要（默认 30 分钟）"
+  },
+  "long_term_enable": {
+    "description": "长期：事实条目",
+    "type": "bool",
+    "default": true,
+    "hint": "每轮对话后由模型抽取关键事实（称呼/偏好/约定/干过的事），按 QQ 号归档；需要每会话额外一次 LLM 调用"
+  },
+  "long_term_extract_every_turns": {
+    "description": "长期：每几轮抽取一次",
+    "type": "int",
+    "default": 1,
+    "hint": "默认每 1 轮抽取一次（每轮多一次 LLM 调用）；想省额度可改成 2 或 3，代价是最近一两轮的事可能还没入库"
+  },
+  "long_term_top_k": {
+    "description": "长期：每次注入几条",
+    "type": "int",
+    "default": 6,
+    "hint": "按关键词重合度排序取前 k 条（同分按最近更新）"
+  },
+  "long_term_scope": {
+    "description": "长期：群内记忆可见范围",
+    "type": "string",
+    "default": "owner_only",
+    "options": [
+      "owner_only",
+      "shared_in_group"
+    ],
+    "hint": "owner_only：别人的记忆绝不注入（不串）；shared_in_group：群内共享（会串，仅调试用）"
+  },
+  "debug_log": {
+    "description": "调试日志",
+    "type": "bool",
+    "default": true,
+    "hint": "把注入摘要、条数、身份行写进插件日志，便于排查"
+  }
+}

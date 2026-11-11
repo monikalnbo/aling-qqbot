@@ -1,0 +1,37 @@
+# 最终状态核对 2026-11-11 21:07:52 CST
+
+## 容器
+astrbot	Up 8 minutes
+napcat	Up 3 hours
+
+## 生效配置（关键项）
+admins_id = ['astrbot', '<你的管理员QQ号>']
+persona_id = aling
+wake_prefix = ['/']
+unique_session = False
+enable_id_white_list = False
+identifier = True
+group_name_display = True
+provider key = ['$DEEPSEEK_API_KEY']
+plugin_set = ['*']
+
+## 插件
+name: astrbot_plugin_aling_memory
+display_name: 阿凌 · 三层记忆
+author: aling
+version: 1.0.1
+desc: 为阿凌提供按 QQ 号归档的三层记忆：短期上下文封顶、中期会话摘要、长期事实条目（跨会话/重启保留），并补充 unified_id 身份锚点。
+[20:59:41.897] [Core] [INFO] [star.star_manager:1215]: Plugin astrbot_plugin_aling_memory (1.0.1) by aling: 为阿凌提供按 QQ 号归档的三层记忆：短期上下文封顶、中期会话摘要、长期事实条目（跨会话/重启保留），并补充 unified_id 身份锚点。
+
+## 适配器/人设
+[21:02:40.386] [Core] [INFO] [aiocqhttp.aiocqhttp_platform_adapter:107]: aiocqhttp(OneBot v11) 适配器已连接。
+[21:06:19.993] [Core] [INFO] [aiocqhttp.aiocqhttp_platform_adapter:107]: aiocqhttp(OneBot v11) 适配器已连接。
+
+## Key 泄露检查（应为空）
+（none）
+
+## 待办 1 的测试残留（别名）
+[('napcat:FriendMessage:<你的管理员QQ号>', '管理员别名')]
+## 清理测试残留 2026-11-11 21:08:06
+已删除验证过程中 /name 写入的别名行 umo_aliases(napcat:FriendMessage:<你的管理员QQ号>,'管理员别名')，查询结果应为空：
+[]

@@ -1,0 +1,70 @@
+11-11 16:57:47 [SUCCESS] nonebot | NoneBot is initializing...
+11-11 16:57:47 [INFO] nonebot | Current Env: prod
+11-11 16:57:47 [SUCCESS] nonebot | Succeeded to load plugin "dafeiyu"
+11-11 16:57:47 [SUCCESS] nonebot | Running NoneBot...
+11-11 16:57:47 [SUCCESS] nonebot | Loaded adapters: OneBot V11
+11-11 16:57:47 [INFO] uvicorn | Started server process [689948]
+11-11 16:57:47 [INFO] uvicorn | Waiting for application startup.
+11-11 16:57:47 [INFO] uvicorn | Application startup complete.
+11-11 16:57:47 [INFO] uvicorn | Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
+11-11 16:57:48 [INFO] uvicorn | 127.0.0.1:43774 - "WebSocket /onebot/v11/ws" [accepted]
+11-11 16:57:48 [INFO] websockets | connection open
+11-11 16:57:48 [INFO] nonebot | OneBot V11 | Bot 10000 connected
+11-11 16:57:48 [SUCCESS] nonebot | OneBot V11 10000 | [message.private.friend]: Message 1 from 123456 '你好，我叫小明'
+11-11 16:57:48 [INFO] nonebot | Event will be handled by Matcher(type='message', module=dafeiyu, lineno=40)
+[fake-napcat] recv: {"action": "send_msg", "params": {"user_id": 123456, "message_type": "private", "message": [{"type": "text", "data": {"text": "[mock大脑] 收到「你好，我叫小明」，鱼在呢～（第1次，带历史0条）"}}]}, "echo": "1"}
+11-11 16:57:48 [INFO] nonebot | Matcher(type='message', module=dafeiyu, lineno=40) running complete
+11-11 16:57:49 [SUCCESS] nonebot | OneBot V11 10000 | [message.group.normal]: Message 2 from 222333@[群:555111] '今天天气不错'
+11-11 16:57:49 [INFO] nonebot | Event will be handled by Matcher(type='message', module=dafeiyu, lineno=40)
+11-11 16:57:49 [INFO] nonebot | Matcher(type='message', module=dafeiyu, lineno=40) running complete
+11-11 16:57:59 [SUCCESS] nonebot | OneBot V11 10000 | [message.group.normal]: Message 3 from 222333@[群:555111] '[at:qq=10000] 在吗大肥鱼'
+11-11 16:57:59 [INFO] nonebot | Event will be handled by Matcher(type='message', module=dafeiyu, lineno=40)
+[fake-napcat] recv: {"action": "send_msg", "params": {"user_id": 222333, "group_id": 555111, "message_type": "group", "message": [{"type": "at", "data": {"qq": "222333"}}, {"type": "text", "data": {"text": " "}}, {"type"
+11-11 16:57:59 [INFO] nonebot | Matcher(type='message', module=dafeiyu, lineno=40) running complete
+11-11 16:57:59 [SUCCESS] nonebot | OneBot V11 10000 | [message.group.normal]: Message 4 from 444555@[群:555111] '大肥鱼今天吃啥'
+11-11 16:57:59 [INFO] nonebot | Event will be handled by Matcher(type='message', module=dafeiyu, lineno=40)
+[fake-napcat] recv: {"action": "send_msg", "params": {"user_id": 444555, "group_id": 555111, "message_type": "group", "message": [{"type": "at", "data": {"qq": "444555"}}, {"type": "text", "data": {"text": " "}}, {"type"
+11-11 16:57:59 [INFO] nonebot | Matcher(type='message', module=dafeiyu, lineno=40) running complete
+11-11 16:57:59 [SUCCESS] nonebot | OneBot V11 10000 | [message.private.friend]: Message 5 from 123456 '我刚才说了我叫什么？'
+11-11 16:57:59 [INFO] nonebot | Event will be handled by Matcher(type='message', module=dafeiyu, lineno=40)
+[fake-napcat] recv: {"action": "send_msg", "params": {"user_id": 123456, "message_type": "private", "message": [{"type": "text", "data": {"text": "[mock大脑] 收到「我刚才说了我叫什么？」，鱼在呢～（第4次，带历史2条）"}}]}, "echo": "4"}
+11-11 16:57:59 [WARNING] nonebot | OneBot V11 | WebSocket for Bot 10000 closed by peer
+11-11 16:57:59 [INFO] nonebot | Matcher(type='message', module=dafeiyu, lineno=40) running complete
+
+================ E2E 结果 ================
+✅ 链路打通：模拟 NapCat → NoneBot → 大肥鱼插件 → 回发消息
+[
+  {
+    "scene": "私聊第1句",
+    "expect_reply": true,
+    "reply_text": "[mock大脑] 收到「你好，我叫小明」，鱼在呢～（第1次，带历史0条）",
+    "message_type": "private",
+    "group_id": null
+  },
+  {
+    "scene": "群聊未@且无触发词",
+    "expect_reply": false,
+    "got": null
+  },
+  {
+    "scene": "群聊@机器人",
+    "expect_reply": true,
+    "reply_text": " [mock大脑] 收到「在吗大肥鱼」，鱼在呢～（第2次，带历史0条）",
+    "message_type": "group",
+    "group_id": 555111
+  },
+  {
+    "scene": "群聊触发词开头",
+    "expect_reply": true,
+    "reply_text": " [mock大脑] 收到「今天吃啥」，鱼在呢～（第3次，带历史0条）",
+    "message_type": "group",
+    "group_id": 555111
+  },
+  {
+    "scene": "私聊第2句（应带历史）",
+    "expect_reply": true,
+    "reply_text": "[mock大脑] 收到「我刚才说了我叫什么？」，鱼在呢～（第4次，带历史2条）",
+    "message_type": "private",
+    "group_id": null
+  }
+]

@@ -1,0 +1,54 @@
+# 大肥鱼 · NapCat + AstrBot 一键部署
+#
+# 用法：
+#   cp .env.example .env    # 或者直接在本文件同目录新建 .env，填 DEEPSEEK_API_KEY
+#   NAPCAT_UID=$(id -u) NAPCAT_GID=$(id -g) docker compose up -d
+#
+# 之后：
+#   AstrBot WebUI  http://localhost:6185
+#   NapCat WebUI   http://localhost:6099/webui   （token 见 docker compose logs napcat）
+#
+# 说明：这里用的是官方 NapCat-Docker 的 astrbot 模板思路，但把 AstrBot 的
+# OneBot v11 反向 WS 配置留给你在 WebUI 里点两下完成（见 docs/上手说明.md），
+# 不预置任何密钥。
+
+services:
+  napcat:
+    image: mlikiowa/napcat-docker:latest
+    container_name: napcat
+    restart: unless-stopped
+    environment:
+      - NAPCAT_UID=${NAPCAT_UID:-1000}
+      - NAPCAT_GID=${NAPCAT_GID:-1000}
+      # 只开 WebUI 与内置的正向 WS，反向 WS 连到 astrbot 由下面的网络别名解决
+      - MODE=ws
+    ports:
+      # 只绑定本机，避免 WebUI 暴露到公网
+      - "127.0.0.1:6099:6099"
+      - "127.0.0.1:3001:3001"
+    volumes:
+      - ./data/napcat/qq:/app/.config/QQ
+      - ./data/napcat/config:/app/napcat/config
+      - ./data/napcat/plugins:/app/napcat/plugins
+    networks:
+      - astrbot_network
+
+  astrbot:
+    image: soulter/astrbot:latest
+    container_name: astrbot
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+      # AstrBot 支持用环境变量引用 provider key：把 provider 的 key 填成 $DEEPSEEK_API_KEY
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+    ports:
+      - "127.0.0.1:6185:6185"
+      - "127.0.0.1:6199:6199"
+    volumes:
+      - ./data/astrbot:/AstrBot/data
+    networks:
+      - astrbot_network
+
+networks:
+  astrbot_network:
+    driver: bridge

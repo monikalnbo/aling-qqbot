@@ -1,0 +1,43 @@
+[mock-napcat] connected to ws://127.0.0.1:6199/ws
+[mock-napcat] 私聊直接说话: OK -> 我是大肥鱼～收到「你好，我叫小明<system_reminder>Current datetime」（人设注入=是，历史=0条，消息=2条）
+[mock-napcat] 私聊第二句（看上下文）: OK -> 我是大肥鱼～收到「我刚才说我叫什么？<system_reminder>Current dateti」（人设注入=是，历史=2条，消息=4条）
+[mock-napcat] 群聊未 @ 且无触发: OK -> (无回复)
+[mock-napcat] 群聊 @ 机器人: OK -> 我是大肥鱼～收到「在吗大肥鱼<system_reminder>Current datetime: 」（人设注入=是，历史=0条，消息=2条）
+[
+  {
+    "scene": "私聊直接说话",
+    "expect_reply": true,
+    "ok": true,
+    "reply": "我是大肥鱼～收到「你好，我叫小明<system_reminder>Current datetime」（人设注入=是，历史=0条，消息=2条）",
+    "segments": [
+      "text"
+    ]
+  },
+  {
+    "scene": "私聊第二句（看上下文）",
+    "expect_reply": true,
+    "ok": true,
+    "reply": "我是大肥鱼～收到「我刚才说我叫什么？<system_reminder>Current dateti」（人设注入=是，历史=2条，消息=4条）",
+    "segments": [
+      "text"
+    ]
+  },
+  {
+    "scene": "群聊未 @ 且无触发",
+    "expect_reply": false,
+    "ok": true,
+    "reply": "",
+    "segments": []
+  },
+  {
+    "scene": "群聊 @ 机器人",
+    "expect_reply": true,
+    "ok": true,
+    "reply": "我是大肥鱼～收到「在吗大肥鱼<system_reminder>Current datetime: 」（人设注入=是，历史=0条，消息=2条）",
+    "segments": [
+      "at",
+      "text",
+      "text"
+    ]
+  }
+]

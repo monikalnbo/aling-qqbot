@@ -1,0 +1,32 @@
+===== 私聊: 在吗
+sent: private 在吗
+--- captured 4 send_* frame(s) ---
+[1] t=  5.13s (+5.13s) action=send_private_msg target=123456 text='*有气无力地举手*'
+[2] t=  5.75s (+0.62s) action=send_private_msg target=123456 text='在在在。'
+[3] t=  6.81s (+1.06s) action=send_private_msg target=123456 text='*撑着脑袋侧躺*'
+[4] t=  7.59s (+0.78s) action=send_private_msg target=123456 text='我说杂鱼，你连着喊"在吗"三次，我要是回"不在"你信吗？'
+total wall time to last send: 7.59s
+===== 私聊: 今天好困，陪我聊会儿
+sent: private 今天好困，陪我聊会儿
+--- captured 5 send_* frame(s) ---
+[1] t=  6.69s (+6.69s) action=send_private_msg target=123456 text='*揉揉眼睛，艰难地撑起身*'
+[2] t=  7.53s (+0.84s) action=send_private_msg target=123456 text='陪你聊是没问题啦，但你这都第三次了。'
+[3] t=  8.69s (+1.16s) action=send_private_msg target=123456 text='*打了个哈欠*'
+[4] t=  9.51s (+0.82s) action=send_private_msg target=123456 text='困成这样还不睡，是有什么事压着？'
+[5] t= 10.54s (+1.03s) action=send_private_msg target=123456 text='还是就单纯不想一个人待着。'
+total wall time to last send: 10.54s
+===== 私聊: 讲个长点的故事，关于你和被子的
+sent: private 讲个长点的故事，关于你和被子的
+--- captured 11 send_* frame(s) ---
+[1] t=  6.45s (+6.45s) action=send_private_msg target=123456 text='*愣了一下，然后抱住被子*'
+[2] t=  7.21s (+0.76s) action=send_private_msg target=123456 text='……行吧，难得问个像样的。'
+[3] t=  8.12s (+0.91s) action=send_private_msg target=123456 text='*想了想*'
+[4] t=  8.83s (+0.71s) action=send_private_msg target=123456 text='我和被子啊。这家伙是我最铁的战友，真的。冬天早上它就死死抱住我，说什么也不让我起来，比你还粘人，杂口杂口。'
+[5] t= 10.01s (+1.18s) action=send_private_msg target=123456 text='*拉了一下被角*'
+[6] t= 10.84s (+0.83s) action=send_private_msg target=123456 text='昨天通宵打完最后一把，天都亮了，我往被子里一钻，那感觉——全世界的门都关上了，只剩我这一小块。'
+[7] t= 11.57s (+0.73s) action=send_private_msg target=123456 text='*小声*'
+[8] t= 12.56s (+0.99s) action=send_private_msg target=123456 text='有时候其实也不是多困。就是不想起来，起来就得面对好多事。躲在这底下，谁都叫不动我。'
+[9] t= 13.69s (+1.12s) action=send_private_msg target=123456 text='*瞥你一眼*'
+[10] t= 14.40s (+0.71s) action=send_private_msg target=123456 text='……不过你倒是叫得动。'
+[11] t= 15.43s (+1.03s) action=send_private_msg target=123456 text='烦死了。'
+total wall time to last send: 15.43s

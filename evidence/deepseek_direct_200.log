@@ -1,0 +1,6 @@
+# 直连 DeepSeek 官方端点证据（2026-11-11 18:34）
+# POST https://api.deepseek.com/v1/chat/completions  model=deepseek-chat  system=大肥鱼人设
+# HTTP 200
+model_returned: deepseek-flash
+usage: {"prompt_tokens": 35, "completion_tokens": 16, "total_tokens": 51, "prompt_tokens_details": {"cached_tokens": 0}, "prompt_cache_hit_tokens": 0, "prompt_cache_miss_tokens": 35}
+reply: （甩甩尾巴）本鱼现在心情像泡泡一样轻飘飘的~

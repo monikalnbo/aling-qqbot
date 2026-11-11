@@ -1,0 +1,53 @@
+[admin-private-provider] ## LLM Providers
+1. deepseek-chat (deepseek-chat) 👈
+
+Use /provider <idx> to switch LLM providers.
+[member-private-provider] 您(ID: 333444)的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。
+[admin-group-sid] UMO: 「napcat:GroupMessage:770127」
+UID: 「<你的管理员QQ号>」
+*Use UMO to set whitelist and configure routing, use UID to set admin list(UMO 可用于设置白名单和配置文件路由，UID 可用于设置管理员列表)
+
+Your session information:
+Bot ID: 「napcat」
+Message Type: 「GroupMessage」
+Session ID: 「770127」
+[admin-group-provider] ## LLM Providers
+1. deepseek-chat (deepseek-chat) 👈
+
+Use /provider <idx> to switch LLM providers.
+[member-group-provider] 您(ID: 333444)的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。
+[member-private-name] 您(ID: 333444)的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。
+[admin-private-name] UMO name set to: 管理员别名
+UMO: napcat:FriendMessage:<你的管理员QQ号>
+
+=== 汇总 ===
+PASS  1 管理员私聊 /provider 放行
+      -> ## LLM Providers
+1. deepseek-chat (deepseek-chat) 👈
+
+Use /provider <idx> to switch LLM providers.
+PASS  2 普通号私聊 /provider 被拒
+      -> 您(ID: 333444)的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。
+PASS  3 群聊 /sid 对照（非管理员指令）
+      -> UMO: 「napcat:GroupMessage:770127」
+UID: 「<你的管理员QQ号>」
+*Use UMO to set whitelist and configure routing, use UID to set admin list(UMO 可用于设置白名单和配置文件路由，UID 可用于设置管理员列表)
+
+Your session information:
+Bot ID: 「napcat」
+Message Type: 「GroupMessage」
+Session ID: 「770127」
+PASS  4 管理员群聊 /provider 放行
+      -> ## LLM Providers
+1. deepseek-chat (deepseek-chat) 👈
+
+Use /provider <idx> to switch LLM providers.
+PASS  5 普通号群聊 /provider 被拒
+      -> 您(ID: 333444)的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。
+PASS  6 普通号 /name 被拒
+      -> 您(ID: 333444)的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。
+PASS  7 管理员 /name 放行
+      -> UMO name set to: 管理员别名
+UMO: napcat:FriendMessage:<你的管理员QQ号>
+group=770127
+exit=0

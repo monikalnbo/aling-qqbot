@@ -1,0 +1,37 @@
+# 管理员运行时日志取证（2026-11-11 20:55 / 21:00 两次验证）
+
+## 管理员 QQ <你的管理员QQ号> 的指令被受理（event_bus 记录发送者）
+[20:55:37.939] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /provider
+[20:55:48.165] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /name 管理员别名
+[20:56:31.833] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /name 会话别名
+[20:58:12.560] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /name 会话别名
+[20:58:38.123] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /mem status
+[20:58:39.827] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /mem facts 333444
+[20:59:48.032] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /name 会话别名
+[21:00:13.593] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /mem status
+[21:00:15.296] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /mem facts 333444
+[21:00:27.188] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /provider
+[21:00:37.419] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /name 管理员别名
+[21:04:02.476] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 管理员/<你的管理员QQ号>: /mem status
+
+## 普通成员 333444 使用管理员指令被拒（waking_check.stage:234）
+[20:56:36.950] [Core] [INFO] [waking_check.stage:234]: User ID 333444 lacks permission to trigger builtin_commands.
+[20:58:14.279] [Core] [INFO] [waking_check.stage:234]: User ID 333444 lacks permission to trigger builtin_commands.
+[20:58:17.693] [Core] [INFO] [waking_check.stage:234]: User ID 333444 lacks permission to trigger builtin_commands.
+[20:59:49.743] [Core] [INFO] [waking_check.stage:234]: User ID 333444 lacks permission to trigger builtin_commands.
+[20:59:53.150] [Core] [INFO] [waking_check.stage:234]: User ID 333444 lacks permission to trigger builtin_commands.
+[21:00:28.903] [Core] [INFO] [waking_check.stage:234]: User ID 333444 lacks permission to trigger builtin_commands.
+[21:00:34.021] [Core] [INFO] [waking_check.stage:234]: User ID 333444 lacks permission to trigger builtin_commands.
+[21:00:35.720] [Core] [INFO] [waking_check.stage:234]: User ID 333444 lacks permission to trigger builtin_commands.
+
+## 记忆插件越权拦截日志
+[20:58:36.430] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:116]: [aling-memory] mem-denied umo=napcat:FriendMessage:333444 qq=333444 sub=status arg=None
+[21:00:06.803] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:116]: [aling-memory] mem-denied umo=napcat:FriendMessage:333444 qq=333444 sub=facts arg=<你的管理员QQ号>
+[21:00:08.505] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:116]: [aling-memory] mem-denied umo=napcat:FriendMessage:333444 qq=333444 sub=forget arg=999999001
+[21:00:11.899] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:116]: [aling-memory] mem-denied umo=napcat:FriendMessage:333444 qq=333444 sub=status arg=None
+[21:02:15.419] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:116]: [aling-memory] mem-denied umo=napcat:GroupMessage:660055 qq=222333 sub=status arg=None
+[21:04:04.094] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:116]: [aling-memory] mem-denied umo=napcat:GroupMessage:660164 qq=222333 sub=status arg=None
+
+## 插件加载版本
+[20:59:41.897] [Core] [INFO] [star.star_manager:1215]: Plugin astrbot_plugin_aling_memory (1.0.1) by aling: 为阿凌提供按 QQ 号归档的三层记忆：短期上下文封顶、中期会话摘要、长期事实条目（跨会话/重启保留），并补充 unified_id 身份锚点。
+[20:59:41.898] [Core] [INFO] [star.base:44]: Plugin astrbot_plugin_aling_memory log level: INFO.

@@ -1,0 +1,160 @@
+# 管理员机制取证（AstrBot v4.29.4, soulter/astrbot:latest）
+# 抓取时间: 2026-11-11 21:04:30 CST
+
+## 1. 版本
+36:VERSION = __version__
+
+## 2. 管理员判定：sender_id 精确匹配 admins_id
+            getattr(event.message_obj.raw_message, "message_type", None) == "post"
+        )
+        message_str = event.message_str.strip()
+        if not preserve_whitespace:
+            event.message_str = message_str
+        api_key_allow_admin_role = event.get_extra("_api_key_allow_admin_role")
+        for admin_id in self.ctx.astrbot_config["admins_id"]:
+            if (
+                api_key_allow_admin_role is not False
+                and str(event.get_sender_id()) == admin_id
+            ):
+                event.role = "admin"
+                break
+
+        """是否是唤醒机器人的事件。"""
+        return self.is_wake
+
+    def is_admin(self) -> bool:
+        """是否是管理员。"""
+        return self.role == "admin"
+
+
+## 3. 指令权限过滤（ADMIN / MEMBER / GROUP_ADMIN / SHARED_GROUP_ADMIN）
+class PermissionType(enum.Flag):
+    """Command permissions; MEMBER also allows administrators."""
+
+    ADMIN = enum.auto()
+    MEMBER = enum.auto()
+    GROUP_ADMIN = enum.auto()
+    SHARED_GROUP_ADMIN = enum.auto()
+
+
+COMMAND_PERMISSION_TYPES = {
+    "admin": PermissionType.ADMIN,
+    "member": PermissionType.MEMBER,
+    "group_admin": PermissionType.GROUP_ADMIN,
+    "shared_group_admin": PermissionType.SHARED_GROUP_ADMIN,
+}
+
+
+class PermissionTypeFilter(HandlerFilter):
+    def __init__(
+        self, permission_type: PermissionType, raise_error: bool = True
+    ) -> None:
+        self.permission_type = permission_type
+        self.raise_error = raise_error
+
+    def filter(self, event: AstrMessageEvent, cfg: AstrBotConfig) -> bool:
+        """Check the sender's permission in the current chat.
+
+        Args:
+            event: Incoming command event.
+            cfg: Active AstrBot configuration.
+
+        Returns:
+            Whether the sender may run the command.
+        """
+        if self.permission_type == PermissionType.ADMIN or (
+            self.permission_type == PermissionType.GROUP_ADMIN and event.get_group_id()
+        ):
+            return event.is_admin()
+        if (
+            self.permission_type == PermissionType.SHARED_GROUP_ADMIN
+            and event.get_group_id()
+        ):
+            # The pipeline marks actual isolation, including platform support.
+            return event.is_admin() or bool(event.get_extra("_session_isolated", False))
+        return True
+
+## 4. 本版本内置指令与各自权限（main.py 装饰器）
+3:from astrbot.core.star.filter.command import GreedyStr
+28:    @filter.command("help")
+33:    @filter.command("sid")
+38:    @filter.permission_type(filter.PermissionType.ADMIN)
+39:    @filter.command("name")
+44:    @filter.command("reset")
+45:    @filter.permission_type(filter.PermissionType.SHARED_GROUP_ADMIN)
+50:    @filter.command("stop")
+55:    @filter.command("new")
+56:    @filter.permission_type(filter.PermissionType.SHARED_GROUP_ADMIN)
+61:    @filter.command("stats")
+66:    @filter.permission_type(filter.PermissionType.ADMIN)
+67:    @filter.command("provider")
+77:    @filter.permission_type(filter.PermissionType.ADMIN)
+78:    @filter.command("dashboard_update")
+83:    @filter.command("set")
+88:    @filter.command("unset")
+
+## 5. 拒绝时回显与日志
+                if permission_not_pass:
+                    if not permission_filter_raise_error:
+                        # 跳过
+                        continue
+                    if self.no_permission_reply:
+                        await event.send(
+                            MessageChain().message(
+                                f"您(ID: {event.get_sender_id()})的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。",
+                            ),
+                        )
+                    logger.info(
+                        f"User ID {event.get_sender_id()} lacks permission to trigger "
+                        f"{star_map[handler.handler_module_path].name}.",
+                    )
+                    event.stop_event()
+                    if event.is_wake:
+                        self._umo_auto_name_recorder.schedule(event)
+
+## 6. 白名单豁免（wl_ignore_admin_on_group/friend）
+            if (
+                event.role == "admin"
+                and event.get_message_type() == MessageType.FRIEND_MESSAGE
+            ):
+                return
+        if (
+            event.unified_msg_origin not in self.whitelist
+            and str(event.get_group_id()).strip() not in self.whitelist
+        ):
+            if self.wl_log:
+                logger.info(
+                    f"Session ID {event.unified_msg_origin} is not in the session "
+                    "allowlist, so event propagation was stopped. Add this session "
+                    "ID in WebUI: Config -> Access Control -> Whitelist -> "
+                    "Whitelist ID List, using the profile assigned to this bot.",
+                )
+            event.stop_event()
+
+## 7. 工具权限：非管理员默认 member，computer_use 需管理员
+            event = None
+        if event is None or not event.is_admin():
+            sender_id = getattr(event, "get_sender_id", lambda: "unknown")()
+            return (
+                f"error: Permission denied. The tool '{tool_name}' requires admin "
+                f"privileges. Your ID: {sender_id}. "
+                "Ask admin to configure in WebUI → Extension → Components."
+            )
+        return None
+
+    def get_full_tool_set(self) -> ToolSet:
+        """获取完整工具集
+
+        使用 ToolSet.add_tool 进行填充。对于同名工具，去重规则为：
+        - 优先保留 active=True 的工具；
+
+## 8. 当前生效配置
+admins_id = ['astrbot', '<你的管理员QQ号>']
+unique_session = False
+enable_id_white_list = False
+wl_ignore_admin_on_group = True
+wl_ignore_admin_on_friend = True
+computer_use_runtime = none
+computer_use_require_admin = True
+persona_id = aling
+wake_prefix = ['/']

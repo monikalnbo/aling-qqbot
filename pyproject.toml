@@ -1,0 +1,21 @@
+[project]
+name = "dafeiyu-qq-bot"
+version = "1.0.0"
+description = "大肥鱼 —— 接入 DeepSeek 的 QQ 聊天机器人（NoneBot2 + OneBot v11）"
+requires-python = ">=3.10"
+dependencies = [
+    "nonebot2>=2.4,<3",
+    "nonebot-adapter-onebot>=2.4,<3",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8", "pytest-asyncio>=0.24"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.setuptools]
+packages = ["dafeiyu"]

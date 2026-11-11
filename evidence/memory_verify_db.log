@@ -1,0 +1,93 @@
+### 采集时间 2026-11-11 20:31:16
+
+## 1) 插件日志（本次验证，umo 前缀 napcat:GroupMessage:660）
+[20:29:38.122] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660179 qq=222333 name=小胖
+[20:29:38.123] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660179 rounds=0/12 contexts=0 (未封顶)
+[20:29:40.144] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660179 qq=222333 out='- 自称叫小胖'
+[20:29:40.148] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660179 qq=222333 saved=1
+[20:29:42.201] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660179 qq=333444 name=阿哲
+[20:29:42.202] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660179 rounds=1/12 contexts=2 (未封顶)
+[20:29:43.902] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660179 qq=333444 out='- 他的名字是阿哲。'
+[20:29:43.907] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660179 qq=333444 saved=1
+[20:29:45.611] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660179 qq=222333 name=小胖
+[20:29:45.611] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660179 rounds=2/12 contexts=4 (未封顶)
+[20:29:45.612] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660179 qq=222333 total=1 picked=1 scope=owner_only
+[20:29:47.315] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660179 qq=222333 out='- 家里养了一只叫年糕的橘猫'
+[20:29:47.320] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660179 qq=222333 saved=1
+[20:29:49.854] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660180 qq=222333 name=小胖
+[20:29:49.855] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660180 rounds=0/12 contexts=0 (未封顶)
+[20:29:49.856] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660180 qq=222333 total=2 picked=2 scope=owner_only
+[20:29:51.820] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660180 qq=222333 out='- 家里养了一只橘猫，叫年糕'
+[20:29:51.825] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660180 qq=222333 saved=1
+[20:29:53.633] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660180 qq=333444 name=阿哲
+[20:29:53.633] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660180 rounds=2/12 contexts=4 (未封顶)
+[20:29:53.634] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660180 qq=333444 total=1 picked=1 scope=owner_only
+[20:29:55.354] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660180 qq=333444 out='- 自称阿哲'
+[20:29:55.359] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660180 qq=333444 saved=1
+[20:29:57.055] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=222333 name=小胖
+[20:29:57.055] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=0/12 contexts=0 (未封顶)
+[20:29:57.056] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=222333 total=3 picked=3 scope=owner_only
+[20:29:59.202] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=222333 out='- 昨天去了动物园，看到一只叫土豆的企鹅'
+[20:29:59.206] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660181 qq=222333 saved=1
+[20:30:00.874] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=333444 name=阿哲
+[20:30:00.877] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=2/12 contexts=4 (未封顶)
+[20:30:00.879] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=333444 total=2 picked=2 scope=owner_only
+[20:30:03.022] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=333444 out='无'
+[20:30:04.725] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=222333 name=小胖
+[20:30:04.726] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=4/12 contexts=8 (未封顶)
+[20:30:04.730] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=222333 total=4 picked=4 scope=owner_only
+[20:30:06.895] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=222333 out='- 空调开到十六度'
+[20:30:06.900] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660181 qq=222333 saved=1
+[20:30:08.596] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=333444 name=阿哲
+[20:30:08.596] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=6/12 contexts=12 (未封顶)
+[20:30:08.597] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=333444 total=2 picked=2 scope=owner_only
+[20:30:10.390] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=333444 out='无'
+[20:30:11.941] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=222333 name=小胖
+[20:30:11.942] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=8/12 contexts=16 (未封顶)
+[20:30:11.943] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=222333 total=5 picked=5 scope=owner_only
+[20:30:14.539] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=222333 out='- 不会开锅做饭，常点外卖'
+[20:30:14.543] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660181 qq=222333 saved=1
+[20:30:16.143] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=333444 name=阿哲
+[20:30:16.144] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=10/12 contexts=20 (未封顶)
+[20:30:16.145] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=333444 total=2 picked=2 scope=owner_only
+[20:30:18.706] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=333444 out='- 觉得外卖太贵，打算自己做饭'
+[20:30:18.717] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660181 qq=333444 saved=1
+[20:30:20.366] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=222333 name=小胖
+[20:30:20.367] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=12/12 contexts=24 (未封顶)
+[20:30:20.368] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=222333 total=6 picked=6 scope=owner_only
+[20:30:22.443] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=222333 out='- 吃泡面时习惯加蛋加菜'
+[20:30:22.448] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660181 qq=222333 saved=1
+[20:30:23.983] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=333444 name=阿哲
+[20:30:23.984] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=14 capped_to=11 dropped_rounds=3 contexts_before=28 contexts_after=22
+[20:30:25.398] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] mid-term umo=napcat:GroupMessage:660181 summarized_rounds=3 covered_turns=3 summary_len=85
+[20:30:25.399] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-summary umo=napcat:GroupMessage:660181 len=85
+[20:30:25.400] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=333444 total=3 picked=3 scope=owner_only
+[20:30:27.688] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=333444 out='无'
+[20:30:29.220] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=222333 name=小胖
+[20:30:29.221] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=14 capped_to=11 dropped_rounds=3 contexts_before=28 contexts_after=22
+[20:30:30.394] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] mid-term umo=napcat:GroupMessage:660181 summarized_rounds=3 covered_turns=6 summary_len=98
+[20:30:30.395] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-summary umo=napcat:GroupMessage:660181 len=98
+[20:30:30.396] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=222333 total=7 picked=6 scope=owner_only
+[20:30:33.007] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=222333 out='- 喜欢吃加蛋加菜的泡面'
+[20:30:33.015] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660181 qq=222333 saved=1
+[20:30:34.634] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=333444 name=阿哲
+[20:30:34.635] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=14 capped_to=11 dropped_rounds=3 contexts_before=28 contexts_after=22
+[20:30:35.923] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] mid-term umo=napcat:GroupMessage:660181 summarized_rounds=3 covered_turns=9 summary_len=108
+[20:30:35.924] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-summary umo=napcat:GroupMessage:660181 len=108
+[20:30:35.924] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=333444 total=3 picked=3 scope=owner_only
+[20:30:38.366] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=333444 out='无'
+[20:30:39.850] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=222333 name=小胖
+[20:30:39.851] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=14 capped_to=11 dropped_rounds=3 contexts_before=28 contexts_after=22
+[20:30:40.912] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] mid-term umo=napcat:GroupMessage:660181 summarized_rounds=3 covered_turns=12 summary_len=122
+[20:30:40.912] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-summary umo=napcat:GroupMessage:660181 len=122
+[20:30:40.913] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=222333 total=8 picked=6 scope=owner_only
+[20:30:42.990] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=222333 out='- 没急'
+[20:30:44.650] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=333444 name=阿哲
+[20:30:44.650] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:660181 rounds=14 capped_to=11 dropped_rounds=3 contexts_before=28 contexts_after=22
+[20:30:45.586] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] mid-term umo=napcat:GroupMessage:660181 summarized_rounds=3 covered_turns=15 summary_len=140
+[20:30:45.587] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-summary umo=napcat:GroupMessage:660181 len=140
+[20:30:45.588] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] inject-facts umo=napcat:GroupMessage:660181 qq=333444 total=3 picked=3 scope=owner_only
+[20:30:48.065] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact-raw umo=napcat:GroupMessage:660181 qq=333444 out='- 自称“阿哲”，希望被这样叫'
+[20:30:48.084] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] fact umo=napcat:GroupMessage:660181 qq=333444 saved=1
+[20:30:49.676] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] identity umo=napcat:GroupMessage:660181 qq=222333 name=小胖
+[20:30:49.677] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:115]: [aling-memory] short-term umo=napcat:GroupMessage:

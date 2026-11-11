@@ -1,0 +1,51 @@
+[管理员先建上下文 /name 会话别名] UMO name set to: 会话别名
+UMO: napcat:FriendMessage:<你的管理员QQ号>
+[普通成员 群 /reset] 您(ID: 333444)的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。
+[管理员 群 /reset] ✅ The current conversation context has been cleared.
+[普通成员 群 /new] 您(ID: 333444)的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。
+[管理员 群 /new] ✅ Switched to new conversation: fbd9.
+[普通成员 群 /help] AstrBot v4.29.4(WebUI: v4.29.4)
+/name - Set display name for current UMO
+/new - Create a new conversation.
+/provider - View or switch LLM Provider
+/reset - Clear the context of the current conversatio
+[普通成员 群 /sid] UMO: 「napcat:GroupMessage:880488」
+UID: 「333444」
+*Use UMO to set whitelist and configure routing, use UID to set admin list(UMO 可用于设置白名单和配置文件路由，UID 可用于设置管理员列表)
+
+Your session information:
+Bot ID: 「napca
+[普通成员 群 /stats] 📊 No stats available for this conversation yet.
+[普通成员 群 /stop] ✅ No running tasks in the current session.
+[普通成员 群 /set a b] 会话 napcat:GroupMessage:880488 变量 a 存储成功。使用 /unset 移除。
+[普通成员 群 /unset a] 会话 napcat:GroupMessage:880488 变量 a 移除成功。
+[普通成员 私聊 /mem facts <你的管理员QQ号>（读别人）] 只能查/删你自己的记忆条目。要看别人的或清空全部，请找管理员。
+[普通成员 私聊 /mem forget 999999001（删别人）] 只能查/删你自己的记忆条目。要看别人的或清空全部，请找管理员。
+[普通成员 私聊 /mem forget（不带参数=清空自己）] 已删除 333444 的 4 条长期条目
+[普通成员 私聊 /mem status] 记忆总览只有管理员能看。你自己那份可以用 /mem facts 查看。
+[管理员 私聊 /mem status] 会话：napcat:FriendMessage:<你的管理员QQ号>
+长期条目总数：9
+本会话摘要：无（覆盖 0 轮）
+当前 QQ 的长期条目：0 条
+配置：max_turns=12 mid=True long=True scope=owner_only
+[管理员 私聊 /mem facts 333444] 333444 的长期条目（0 条）：
+
+=== 权限矩阵 ===
+放行	管理员先建上下文 /name 会话别名	UMO name set to: 会话别名
+被拒	普通成员 群 /reset	您(ID: 333444)的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。
+放行	管理员 群 /reset	✅ The current conversation context has been cleared.
+被拒	普通成员 群 /new	您(ID: 333444)的权限不足以使用此指令。通过 /sid 获取 ID 并请管理员添加。
+放行	管理员 群 /new	✅ Switched to new conversation: fbd9.
+放行	普通成员 群 /help	AstrBot v4.29.4(WebUI: v4.29.4)
+放行	普通成员 群 /sid	UMO: 「napcat:GroupMessage:880488」
+放行	普通成员 群 /stats	📊 No stats available for this conversation yet.
+放行	普通成员 群 /stop	✅ No running tasks in the current session.
+放行	普通成员 群 /set a b	会话 napcat:GroupMessage:880488 变量 a 存储成功。使用 /unset 移除。
+放行	普通成员 群 /unset a	会话 napcat:GroupMessage:880488 变量 a 移除成功。
+被拒	普通成员 私聊 /mem facts <你的管理员QQ号>（读别人）	只能查/删你自己的记忆条目。要看别人的或清空全部，请找管理员。
+被拒	普通成员 私聊 /mem forget 999999001（删别人）	只能查/删你自己的记忆条目。要看别人的或清空全部，请找管理员。
+放行	普通成员 私聊 /mem forget（不带参数=清空自己）	已删除 333444 的 4 条长期条目
+被拒	普通成员 私聊 /mem status	记忆总览只有管理员能看。你自己那份可以用 /mem facts 查看。
+放行	管理员 私聊 /mem status	会话：napcat:FriendMessage:<你的管理员QQ号>
+放行	管理员 私聊 /mem facts 333444	333444 的长期条目（0 条）：
+group=880488

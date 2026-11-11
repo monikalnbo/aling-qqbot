@@ -1,0 +1,12 @@
+﻿{
+    "enable_identity": true,
+    "short_term_max_turns": 12,
+    "mid_term_enable": true,
+    "mid_term_keep_turns": 6,
+    "mid_term_idle_seconds": 1800,
+    "long_term_enable": true,
+    "long_term_extract_every_turns": 1,
+    "long_term_top_k": 6,
+    "long_term_scope": "owner_only",
+    "debug_log": true
+}

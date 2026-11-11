@@ -1,0 +1,9 @@
+# 真实 DeepSeek 调用证据（经 AstrBot，2026-11-11 18:35）
+# 通道：AstrBot WebUI Chat API  POST /api/chat/send (SSE)  → provider deepseek-chat → https://api.deepseek.com/v1
+# 请求体：{"session_id":"...","message":"你好呀，用一两句话介绍下你自己是谁？"}
+# HTTP 200，time_total=1.525s；事件类型：session_id, user_message_saved, run_started, plain×34, agent_stats, complete, message_saved, end
+
+"type": "agent_stats", "data": {"token_usage": {"input_other": 1695, "input_cached": 0, "output": 34}, "current_context_tokens": 1695, "start_time": 1794393306.1168458, "end_time": 1794393307.3208597, "time_to_first_token": 0.8040831089019775}}
+
+# 拼接后的完整回复：
+本鱼是大肥鱼，一条住在 QQ 里的蓝鲸鱼娘～被你们的聊天声勾过来的，就不走啦噗噜噜 (・ω・)

@@ -1,0 +1,6 @@
+[17:27:59.891] [Core] [INFO] [utils.llm_metadata:79]: Successfully fetched metadata for 4139 LLMs from https://models.dev/api.json.
+[17:28:01.938] [Core] [INFO] [aiocqhttp.aiocqhttp_platform_adapter:107]: aiocqhttp(OneBot v11) 适配器已连接。
+[17:28:02.940] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 测试/123456: 你好，我叫小明
+[17:28:04.644] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 测试/123456: 我刚才说我叫什么？
+[17:28:06.149] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 测试/222333: 今天天气不错
+[17:28:52.310] [Core] [INFO] [core.event_bus:149]: [default] [napcat(aiocqhttp)] 测试/222333: [At:10000] 在吗大肥鱼

@@ -1,0 +1,46 @@
+# ===== 密钥与本地配置（绝对不要提交）=====
+.env
+.env.prod
+.env.dev
+.env.check
+astrbot/.env
+astrbot/.env.*
+!astrbot/.env.example
+
+# ===== AstrBot 运行时数据：登录态 / 密码哈希 / 聊天数据库 =====
+.astrbot/
+astrbot/data/*
+# 例外：只有示例配置允许进仓库（不含任何真实凭据）
+!astrbot/data/astrbot/
+astrbot/data/astrbot/*
+!astrbot/data/astrbot/cmd_config.json
+!astrbot/data/astrbot/config/
+astrbot/data/astrbot/config/*
+!astrbot/data/astrbot/config/astrbot_plugin_aling_memory_config.json
+
+# ===== NapCat 运行时：QQ 登录态、协议配置、二维码 =====
+qq/
+napcat/
+*.qrcode
+qq_login_qr.png
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# ===== NoneBot 运行时 =====
+data/
+logs/
+cache/
+.nonebot/
+
+# ===== 备份 / 编辑器 =====
+backup/
+.vscode/
+.idea/
