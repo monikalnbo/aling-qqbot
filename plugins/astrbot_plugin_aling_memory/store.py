@@ -50,6 +50,15 @@ CREATE TABLE IF NOT EXISTS group_messages (
 );
 CREATE INDEX IF NOT EXISTS idx_group_messages_umo_ts ON group_messages (umo, ts);
 CREATE INDEX IF NOT EXISTS idx_group_messages_ts ON group_messages (ts);
+CREATE TABLE IF NOT EXISTS session_archive (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    umo         TEXT NOT NULL,
+    ts          REAL NOT NULL DEFAULT 0,
+    role        TEXT NOT NULL DEFAULT 'user',
+    content     TEXT NOT NULL DEFAULT '',
+    summarized  INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_session_archive_umo_ts ON session_archive (umo, ts);
 """
 
 
@@ -60,7 +69,18 @@ class MemoryStore:
         self._conn = sqlite3.connect(str(db_path), check_same_thread=False)
         self._conn.row_factory = sqlite3.Row
         self._conn.executescript(_SCHEMA)
+        self._migrate()
         self._conn.commit()
+
+    def _migrate(self) -> None:
+        """老库补列：session_archive.summarized（1.2.0 新增）。"""
+        cols = {
+            r[1] for r in self._conn.execute("PRAGMA table_info(session_archive)")
+        }
+        if cols and "summarized" not in cols:
+            self._conn.execute(
+                "ALTER TABLE session_archive ADD COLUMN summarized INTEGER NOT NULL DEFAULT 0"
+            )
 
     def close(self) -> None:
         try:
@@ -314,6 +334,48 @@ class MemoryStore:
         else:
             row = self._conn.execute("SELECT COUNT(*) AS c FROM group_messages").fetchone()
         return int(row["c"]) if row else 0
+
+    # ---------- 会话原文存档（被移出上下文的对话，供摘要/回看追溯） ----------
+    def archive_session_turn(self, umo: str, role: str, text: str, ts: float = 0) -> None:
+        """把一段即将离开上下文的原文存下来；内容相同且紧邻的不重复写。"""
+        text = (text or "").strip()
+        if not text:
+            return
+        row = self._conn.execute(
+            "SELECT content FROM session_archive WHERE umo=? ORDER BY id DESC LIMIT 1",
+            (umo,),
+        ).fetchone()
+        if row and row["content"] == text:
+            return
+        self._conn.execute(
+            "INSERT INTO session_archive (umo, ts, role, content) VALUES (?,?,?,?)",
+            (umo, float(ts or time.time()), role or "user", text),
+        )
+        self._conn.commit()
+
+    def session_archive_count(self, umo: str) -> int:
+        row = self._conn.execute(
+            "SELECT COUNT(*) AS c FROM session_archive WHERE umo=?", (umo,)
+        ).fetchone()
+        return int(row["c"]) if row else 0
+
+    def unsummarized_archive(self, umo: str) -> list[sqlite3.Row]:
+        """还没进过摘要的存档原文（按时间正序）。"""
+        return list(
+            self._conn.execute(
+                "SELECT * FROM session_archive WHERE umo=? AND summarized=0 "
+                "ORDER BY id",
+                (umo,),
+            ).fetchall()
+        )
+
+    def mark_archived_summarized(self, umo: str) -> int:
+        cur = self._conn.execute(
+            "UPDATE session_archive SET summarized=1 WHERE umo=? AND summarized=0",
+            (umo,),
+        )
+        self._conn.commit()
+        return cur.rowcount
 
     # ---------- 轮次计数 ----------
     def bump_turn(self, umo: str) -> int:

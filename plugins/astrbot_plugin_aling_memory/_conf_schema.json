@@ -11,11 +11,29 @@
         "default": 12,
         "hint": "超过后裁掉最旧的整轮（保留 system 与人设），上下文条数恒定封顶；默认 12 轮"
     },
+    "short_term_max_chars": {
+        "description": "短期：每轮上下文最多带多少字符",
+        "type": "int",
+        "default": 6000,
+        "hint": "第二道闸：即使轮数没超，最近几轮原文加起来超过这个字数也从最旧的开始移出上下文（至少保留 mid_term_keep_turns 轮原文）；0 表示不限制。中英文混合约 1 字符 ≈ 0.5~1 token"
+    },
     "mid_term_enable": {
         "description": "中期：会话摘要",
         "type": "bool",
         "default": true,
-        "hint": "当短期窗口即将裁掉旧轮或会话空闲超时，把旧内容压成摘要，按 群号/私聊QQ号 归档"
+        "hint": "当短期窗口即将裁掉旧轮或会话空闲超时，把旧内容压成摘要，按 群号/私聊QQ号 归档；压缩在后台进行，不占用当轮回复时间"
+    },
+    "mid_term_summary_cap": {
+        "description": "中期：摘要最多保留多少字",
+        "type": "int",
+        "default": 400,
+        "hint": "滚动摘要会一直合并下去，越滚越长；超过这个字数就硬截断，保证每轮携带的摘要块有上限。0 表示不限制"
+    },
+    "mid_term_batch_rounds": {
+        "description": "中期：攒够几轮再压一次摘要",
+        "type": "int",
+        "default": 4,
+        "hint": "轮数到上限后每轮只掉 1 轮原文；攒够这么多轮再调一次模型合并压成摘要，避免每轮都多一次摘要调用、也避免摘要被反复改写丢失旧话题。设 1 表示每掉一轮就压"
     },
     "mid_term_keep_turns": {
         "description": "中期：保留最近几轮原文",

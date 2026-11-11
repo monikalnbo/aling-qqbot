@@ -26,6 +26,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import re
 import time
@@ -44,8 +45,11 @@ PLUGIN_NAME = "astrbot_plugin_aling_memory"
 DEFAULT_CONFIG: dict[str, Any] = {
     "enable_identity": True,
     "short_term_max_turns": 12,
+    "short_term_max_chars": 6000,
     "mid_term_enable": True,
     "mid_term_keep_turns": 6,
+    "mid_term_summary_cap": 400,
+    "mid_term_batch_rounds": 4,
     "mid_term_idle_seconds": 1800,
     "long_term_enable": True,
     "long_term_extract_every_turns": 1,
@@ -73,6 +77,16 @@ _CN_CHAR_RE = re.compile(r"[\u4e00-\u9fff]")
 
 ARCHIVE_HEADER = "【群里刚才的聊天记录（本地存档摘录，按时间正序）】"
 
+# 我们注入的「摘要 / 长期记忆 / 回看」块会被 AstrBot 原样写进会话历史。
+# 每轮都重新注入最新版，所以处理前先把历史里的旧块剥掉，否则同一段内容会
+# 在上下文里越堆越多（实测同一会话里堆过 6 份长期记忆块）。
+INJECT_HEADERS = (SUMMARY_HEADER, ARCHIVE_HEADER, "【长期记忆：")
+INJECT_ACKS = {
+    "（已记住这些早期对话要点。）",
+    "（已读取该用户的长期记忆条目。）",
+    "（已翻到这几位刚才说的话。）",
+}
+
 # 「回看」触发词：只有问过去的事、或者明说自己不知道时才查库。
 # 日常「在吗」「吃了吗」这类不该命中，保证日常请求不查库、不加成本。
 RECALL_TRIGGER_RE = re.compile(
@@ -95,10 +109,12 @@ RECALL_BROAD_RE = re.compile(
 SUMMARY_PROMPT = (
     "把下面这段群聊/私聊记录压缩成一段中文摘要，供之后的对话继续使用。\n"
     "要求：\n"
-    "1. 保留人物与身份的对应关系：每条信息都标清楚是哪个 QQ 号（以及当时的昵称）说的、做过什么，不要张冠李戴；\n"
+    "1. 保留人物与身份的对应关系：每条信息都标清楚是哪个昵称的人说的、做过什么，不要张冠李戴；\n"
+    "   （记录里可能出现 5 位以上数字编号，那只是内部标识，摘要里一律不要写，只用昵称）\n"
     "2. 保留话题、结论、约定、待办和情绪走向，删掉寒暄与重复；\n"
-    "3. 300 字以内，纯文本，不要标题、不要列表符号以外的多余格式；\n"
-    "4. 如果没有值得保留的信息，就输出“（无重要内容）”。\n"
+    "3. 纯文本、不要标题，300 字以内（多轮合并时优先保留话题与结论，可适当省略细节）；\n"
+    "4. 已有摘要里仍然有效的条目必须原样保留，不要因为新内容而删掉旧话题；\n"
+    "5. 如果没有值得保留的信息，就输出“（无重要内容）”。\n"
     "已有摘要（如果有，合并进去，不要丢掉其中仍然有效的信息）：\n{prev}\n\n"
     "需要压缩的对话：\n{body}"
 )
@@ -126,7 +142,7 @@ FACT_PROMPT = (
     "astrbot_plugin_aling_memory",
     "aling",
     "按 QQ 号归档的三层记忆 + 群聊全量存档与按需回看，并补充 unified_id 身份锚点",
-    "1.1.0",
+    "1.2.0",
 )
 class AlingMemoryPlugin(Star):
     def __init__(self, context: Context, config: dict | None = None) -> None:
@@ -139,6 +155,7 @@ class AlingMemoryPlugin(Star):
         self.data_dir = data_dir
         self.store = MemoryStore(data_dir / "memory.db")
         self._inflight: set[str] = set()
+        self._tasks: set[asyncio.Task] = set()
 
     async def initialize(self) -> None:
         self._last_umo = ""
@@ -152,6 +169,10 @@ class AlingMemoryPlugin(Star):
         )
 
     async def terminate(self) -> None:
+        for task in list(self._tasks):
+            task.cancel()
+        if self._tasks:
+            await asyncio.gather(*self._tasks, return_exceptions=True)
         self.store.close()
 
     # ------------------------------------------------------------------ 工具
@@ -178,6 +199,17 @@ class AlingMemoryPlugin(Star):
                 p.get("text", "") if isinstance(p, dict) else str(p) for p in c
             )
         return ""
+
+    def _strip_old_injections(self, dialogue: list[Any]) -> list[Any]:
+        """剥掉历史里上一次注入的摘要/长期记忆/回看块（本轮会重新注入）。"""
+
+        def _is_injection(item: Any) -> bool:
+            text = self._text_of(item).lstrip()
+            if text in INJECT_ACKS:
+                return True
+            return text.startswith(INJECT_HEADERS)
+
+        return [item for item in dialogue if not _is_injection(item)]
 
     @staticmethod
     def _role_of(item: Any) -> str:
@@ -381,6 +413,23 @@ class AlingMemoryPlugin(Star):
     async def on_llm_request(self, event: AstrMessageEvent, req: ProviderRequest):
         umo = event.unified_msg_origin
         self._last_umo = umo
+        # 逐轮量上下文体积：每轮真正发给模型的 system + contexts 字符数（改前/改后对比用）
+        try:
+            sys_len = len(req.system_prompt or "")
+            ctx_len = sum(len(str(getattr(m, "content", "") or "")) for m in req.contexts)
+            parts_len = sum(len(getattr(p, "text", "") or "") for p in req.extra_user_content_parts)
+            try:
+                tools_len = len(json.dumps(req.func_tool.get_full_tool_set().to_openai_schema(), ensure_ascii=False)) if req.func_tool else 0
+            except Exception:  # noqa: BLE001
+                tools_len = 0
+            self.log(
+                f"ctx-size umo={umo} turns={len(req.contexts)} "
+                f"sys_chars={sys_len} ctx_chars={ctx_len} parts_chars={parts_len} "
+                f"tools_chars={tools_len} "
+                f"total_chars={sys_len + ctx_len + parts_len + tools_len}"
+            )
+        except Exception:  # noqa: BLE001
+            pass
         qq = event.get_sender_id() or ""
         name = event.get_sender_name() or ""
 
@@ -401,46 +450,93 @@ class AlingMemoryPlugin(Star):
                 )
             self.log(f"identity umo={umo} qq={qq} name={name}")
 
-        # 2) 短期：整轮裁剪
+        # 2) 短期：整轮裁剪（轮数上限 + 每轮真实字符预算，两道闸）
         max_turns = int(self.cfg.get("short_term_max_turns", 12) or 0)
+        max_chars = int(self.cfg.get("short_term_max_chars", 6000) or 0)
+        keep_turns = max(1, int(self.cfg.get("mid_term_keep_turns", 6)))
         dropped_rounds: list[list[Any]] = []
         head, dialogue = self._split_history(list(req.contexts or []))
+        cleaned = self._strip_old_injections(dialogue)
+        if len(cleaned) != len(dialogue):
+            self.log(
+                f"strip-inject umo={umo} removed={len(dialogue) - len(cleaned)} "
+                f"contexts_before={len(dialogue)}"
+            )
+            dialogue = cleaned
+            req.contexts = head + dialogue
         rounds = self._group_into_rounds(dialogue)
         if max_turns > 0 and len(rounds) > max_turns:
-            keep = max(1, max_turns - 1)
-            cut = len(rounds) - keep
+            cut = len(rounds) - max(1, max_turns - 1)
             dropped_rounds = rounds[:cut]
-            kept_from_db = rounds[cut:]
-            req.contexts = head + [m for rnd in kept_from_db for m in rnd]
+            rounds = rounds[cut:]
+
+        # 字符闸：窗口再小，单轮消息特别长时总量仍会爆；从旧往新逐轮算，
+        # 超预算的就移出上下文（原文进存档，后面压摘要）。
+        if max_chars > 0 and rounds:
+            kept: list[list[Any]] = []
+            used = 0
+            for rnd in reversed(rounds):
+                size = sum(len(self._text_of(m)) for m in rnd)
+                if len(kept) >= keep_turns and used + size > max_chars:
+                    dropped_rounds.extend(reversed(rounds[: len(rounds) - len(kept)]))
+                    break
+                kept.append(rnd)
+                used += size
+            rounds = list(reversed(kept))
+
+        req.contexts = head + [m for rnd in rounds for m in rnd]
+        if dropped_rounds:
             self.log(
-                f"short-term umo={umo} rounds={len(rounds)} capped_to={keep} "
-                f"dropped_rounds={cut} contexts_before={len(dialogue)} "
-                f"contexts_after={len(req.contexts) - len(head)}"
+                f"short-term umo={umo} rounds={len(rounds) + len(dropped_rounds)} "
+                f"kept_rounds={len(rounds)} kept_chars={sum(len(self._text_of(m)) for rnd in rounds for m in rnd)} "
+                f"max_turns={max_turns} max_chars={max_chars} "
+                f"dropped_rounds={len(dropped_rounds)} contexts_after={len(req.contexts) - len(head)}"
             )
         else:
             self.log(
                 f"short-term umo={umo} rounds={len(rounds)}/{max_turns} "
-                f"contexts={len(dialogue)} (未封顶)"
+                f"chars={sum(len(self._text_of(m)) for rnd in rounds for m in rnd)}/{max_chars} "
+                f"contexts={len(req.contexts) - len(head)} (未封顶)"
             )
+
+        # 被闸门移出上下文的原文一律先存档，供摘要与回看追溯；跟摘要开关无关。
+        for rnd in dropped_rounds:
+            for item in rnd:
+                self.store.archive_session_turn(
+                    umo, self._role_of(item), self._text_of(item)
+                )
 
         if not self.cfg.get("mid_term_enable", True):
             return
 
-        # 3) 中期：把被裁掉的轮 + 空闲过久的旧轮压成摘要
+        # 3) 中期：被移出上下文的旧轮 → 压成摘要（跨轮合并）
         prev_summary, covered = self.store.get_summary(umo)
-        summarize_targets: list[list[Any]] = list(dropped_rounds)
-
-        if not summarize_targets and covered == 0:
+        summarize_targets: list[list[Any]] = []
+        # 原文以 session_archive 为准：历史里每轮新掉下来的先落库，再按「攒批」
+        # 合并压摘要。这样既不会因为每次重算摘要而漂移丢话题，也不会每轮
+        # 都多花一次模型调用。
+        if covered > 0:
+            pending = self.store.unsummarized_archive(umo)
+            batch = max(1, int(self.cfg.get("mid_term_batch_rounds", 4)))
+            if pending and len(pending) >= batch * 2:
+                summarize_targets = [
+                    [{"role": row["role"], "content": row["content"]}]
+                    for row in pending
+                ]
+            else:
+                self.log(
+                    f"mid-term-skip umo={umo} pending={len(pending)}"
+                    f"/{batch * 2}（攒够再压）"
+                )
+        elif covered == 0:
             # 首次运行且没有摘要：如果上下文很长，先压掉一部分做冷启动
-            keep_turns = max(1, int(self.cfg.get("mid_term_keep_turns", 6)))
             if len(rounds) > keep_turns * 2:
                 summarize_targets = rounds[:-keep_turns]
                 req.contexts = head + [
                     m for rnd in rounds[-keep_turns:] for m in rnd
                 ]
-        elif not summarize_targets and covered > 0:
+        else:
             # 已经有过摘要：把早于 covered 轮之外的旧轮压掉，保持封顶后仍有摘要
-            keep_turns = max(1, int(self.cfg.get("mid_term_keep_turns", 6)))
             if len(rounds) > keep_turns:
                 summarize_targets = rounds[:-keep_turns]
                 req.contexts = head + [
@@ -449,36 +545,12 @@ class AlingMemoryPlugin(Star):
 
         if summarize_targets:
             body = self._format_rounds(summarize_targets)
-            if len(body) > 40 and umo not in self._inflight:
-                self._inflight.add(umo)
-                try:
-                    prov = await self.context.get_using_provider_async(umo)
-                    if prov is not None:
-                        prompt = SUMMARY_PROMPT.format(
-                            prev=prev_summary or "（还没有）", body=body[:8000]
-                        )
-                        resp = await prov.text_chat(prompt=prompt, request_max_retries=1)
-                        summary = (resp.completion_text or "").strip()
-                        no_content = summary in {"（无重要内容）", "无", "（无）", ""}
-                        if summary and not no_content:
-                            new_covered = covered + len(summarize_targets)
-                            self.store.set_summary(umo, summary, new_covered)
-                            prev_summary = summary
-                            self.log(
-                                f"mid-term umo={umo} summarized_rounds={len(summarize_targets)} "
-                                f"covered_turns={new_covered} summary_len={len(summary)}"
-                            )
-                        elif no_content:
-                            new_covered = covered + len(summarize_targets)
-                            self.store.set_summary(umo, prev_summary, new_covered)
-                            self.log(
-                                f"mid-term-keep umo={umo} rounds={len(summarize_targets)} "
-                                f"no_new_content covered_turns={new_covered}"
-                            )
-                except Exception as e:  # noqa: BLE001
-                    logger.warning(f"[aling-memory] 摘要生成失败：{e}")
-                finally:
-                    self._inflight.discard(umo)
+            if len(body) > 40:
+                # 摘要交给后台任务：本轮回复不等它，避免每轮多一次 LLM 往返。
+                new_covered = covered + len(summarize_targets)
+                self._schedule_summary(
+                    umo, prev_summary, body[:8000], new_covered, len(summarize_targets)
+                )
 
         head, _ = self._split_history(list(req.contexts or []))
         intro: list[dict[str, Any]] = []
@@ -539,6 +611,56 @@ class AlingMemoryPlugin(Star):
             req.contexts = head + intro + (
                 req.contexts[len(head) :] if head else list(req.contexts)
             )
+
+    # --------------------------------------------------------- 中期摘要（后台）
+    def _schedule_summary(
+        self, umo: str, prev_summary: str, body: str, new_covered: int, n_rounds: int
+    ) -> None:
+        """压摘要不阻塞本轮回复：扔到后台任务，失败就留到下一轮再补。"""
+        if umo in self._inflight:
+            return
+        self._inflight.add(umo)
+
+        async def _work() -> None:
+            try:
+                prov = await self.context.get_using_provider_async(umo)
+                if prov is None:
+                    return
+                prompt = SUMMARY_PROMPT.format(
+                    prev=prev_summary or "（还没有）", body=body
+                )
+                t0 = time.time()
+                resp = await prov.text_chat(prompt=prompt, request_max_retries=1)
+                summary = (resp.completion_text or "").strip()
+                cap = int(self.cfg.get("mid_term_summary_cap", 400) or 0)
+                if cap > 0 and len(summary) > cap:
+                    summary = summary[:cap].rstrip() + "…"
+                no_content = summary in {"（无重要内容）", "无", "（无）", ""}
+                if summary and not no_content:
+                    self.store.set_summary(umo, summary, new_covered)
+                    done = self.store.mark_archived_summarized(umo)
+                    self.log(
+                        f"mid-term umo={umo} summarized_rounds={n_rounds} "
+                        f"archived_marked={done} "
+                        f"covered_turns={new_covered} summary_len={len(summary)} "
+                        f"cost_s={time.time() - t0:.1f}"
+                    )
+                elif no_content:
+                    self.store.set_summary(umo, prev_summary, new_covered)
+                    done = self.store.mark_archived_summarized(umo)
+                    self.log(
+                        f"mid-term-keep umo={umo} rounds={n_rounds} "
+                        f"archived_marked={done} "
+                        f"no_new_content covered_turns={new_covered}"
+                    )
+            except Exception as e:  # noqa: BLE001
+                logger.warning(f"[aling-memory] 摘要生成失败：{type(e).__name__}")
+            finally:
+                self._inflight.discard(umo)
+
+        task = asyncio.create_task(_work())
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
     # --------------------------------------------------------- 回看层（检索）
     @staticmethod
@@ -648,6 +770,18 @@ class AlingMemoryPlugin(Star):
         if self.cfg.get("reply_strip_qq", True):
             self._strip_qq_from_reply(resp, event)
 
+        # 用真实 usage 记账：每轮 prompt_tokens（含缓存命中）到底多大
+        try:
+            u = getattr(resp, "usage", None)
+            if u is not None:
+                self.log(
+                    f"usage umo={event.unified_msg_origin} "
+                    f"in={getattr(u, 'input_other', 0)} "
+                    f"cached={getattr(u, 'input_cached', 0)} out={getattr(u, 'output', 0)}"
+                )
+        except Exception:  # noqa: BLE001
+            pass
+
         if not self.cfg.get("long_term_enable", True):
             return
         umo = event.unified_msg_origin
@@ -659,37 +793,46 @@ class AlingMemoryPlugin(Star):
         if turns % every != 0:
             return
         user_text = getattr(event, "message_str", "") or ""
-        bot_text = (resp.completion_text or "").strip()
         # 只喂「本轮这名用户自己说的话」：阿凌的回复、历史里别人的话都可能被误挂到他头上
         body = f"用户({qq}，{event.get_sender_name() or '未知'}): {user_text}"
         if len(body) < 20:
             return
-        try:
-            prov = await self.context.get_using_provider_async(umo)
-            if prov is None:
+        self._schedule_fact(umo, qq, event.get_sender_name() or "", body[:4000])
+
+    def _schedule_fact(self, umo: str, qq: str, name: str, body: str) -> None:
+        """事实抽取放后台：每轮多一次模型调用，放在回复路径上会直接拖慢回复。"""
+
+        async def _work() -> None:
+            try:
+                prov = await self.context.get_using_provider_async(umo)
+                if prov is None:
+                    return
+                r = await prov.text_chat(
+                    prompt=FACT_PROMPT.format(qq=qq, body=body),
+                    system_prompt="",
+                    request_max_retries=1,
+                )
+                out = (r.completion_text or "").strip()
+            except Exception as e:  # noqa: BLE001
+                logger.warning(f"[aling-memory] 事实抽取失败：{type(e).__name__}")
                 return
-            r = await prov.text_chat(
-                prompt=FACT_PROMPT.format(qq=qq, body=body[:4000]),
-                system_prompt="",
-                request_max_retries=1,
-            )
-            out = (r.completion_text or "").strip()
-        except Exception as e:  # noqa: BLE001
-            logger.warning(f"[aling-memory] 事实抽取失败：{e}")
-            return
-        self.log(f"fact-raw umo={umo} qq={qq} out={out[:160]!r}")
-        if not out or out.strip() in {"无", "（无）"}:
-            return
-        saved = 0
-        for line in out.splitlines():
-            line = line.strip()
-            line = re.sub(r"^[-*•\d.、\s]+", "", line)
-            if len(line) < 4 or line.startswith("无"):
-                continue
-            if self.store.add_fact(umo, qq, event.get_sender_name() or "", line):
-                saved += 1
-        if saved:
-            self.log(f"fact umo={umo} qq={qq} saved={saved}")
+            self.log(f"fact-raw umo={umo} qq={qq} out={out[:160]!r}")
+            if not out or out.strip() in {"无", "（无）"}:
+                return
+            saved = 0
+            for line in out.splitlines():
+                line = line.strip()
+                line = re.sub(r"^[-*•\d.、\s]+", "", line)
+                if len(line) < 4 or line.startswith("无"):
+                    continue
+                if self.store.add_fact(umo, qq, name, line):
+                    saved += 1
+            if saved:
+                self.log(f"fact umo={umo} qq={qq} saved={saved}")
+
+        task = asyncio.create_task(_work())
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
     @filter.on_llm_response()
     async def archive_bot_reply(self, event: AstrMessageEvent, resp: LLMResponse):

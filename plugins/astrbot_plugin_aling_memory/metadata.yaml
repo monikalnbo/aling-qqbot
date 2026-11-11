@@ -1,7 +1,7 @@
 name: astrbot_plugin_aling_memory
 display_name: 阿凌 · 三层记忆
 author: aling
-version: 1.1.0
+version: 1.2.0
 desc: 为阿凌提供按 QQ 号归档的三层记忆（短期上下文封顶、中期会话摘要、长期事实条目），外加群聊全量存档与按需回看：群里没 @ 它的消息也全都记进本地 SQLite，被问到过去的事时才检索注入当次回答；补充 unified_id 身份锚点，回复出口会拦掉念出来的 QQ 号。
 short_desc: 三层记忆 + 群聊全量存档 + 按需回看
 repo: https://github.com/monikalnbo/aling-qqbot

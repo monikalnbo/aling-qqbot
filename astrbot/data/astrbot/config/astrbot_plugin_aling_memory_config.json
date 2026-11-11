@@ -1,7 +1,10 @@
 ﻿{
   "enable_identity": true,
   "short_term_max_turns": 12,
+  "short_term_max_chars": 6000,
   "mid_term_enable": true,
+  "mid_term_summary_cap": 400,
+  "mid_term_batch_rounds": 4,
   "mid_term_keep_turns": 6,
   "mid_term_idle_seconds": 1800,
   "long_term_enable": true,

@@ -1,0 +1,59 @@
+# 改前上下文体积取证  2026-11-11 23:27:50 CST  群=880072
+轮01 今天下班好晚，累死了  -> 回复 4 条 首条 2.4s
+轮02 我想吃你上次说的那个串串  -> 回复 4 条 首条 1.8s
+轮03 对了，我最近在学吉他，手指疼  -> 回复 5 条 首条 1.8s
+轮04 你说我该不该换个工作啊  -> 回复 5 条 首条 2.1s
+轮05 我妈又催我相亲了，烦  -> 回复 4 条 首条 1.8s
+轮06 周末我想去看电影，有什么推荐吗  -> 回复 5 条 首条 2.4s
+轮07 我养的那只猫最近老掉毛  -> 回复 5 条 首条 2.4s
+轮08 你觉得我这个人是不是太内向了  -> 回复 4 条 首条 2.4s
+轮09 刚才说到电影，我其实更喜欢科幻片  -> 回复 4 条 首条 2.7s
+轮10 我打算下个月去趟成都玩  -> 回复 4 条 首条 2.7s
+轮11 最近天气冷了，你也要多穿点  -> 回复 4 条 首条 2.1s
+轮12 我昨天梦到自己在飞，很奇怪吧  -> 回复 5 条 首条 1.8s
+轮13 算了不说这些了，陪我说会儿话  -> 回复 4 条 首条 2.7s
+轮14 你还记得我一开始跟你说过什么吗  -> 回复 5 条 首条 2.7s
+
+## 每轮上下文体积（插件日志）
+  ctx-size umo=napcat:GroupMessage:880072 turns=18 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=7/12 chars=2193/6000 contexts=14 (未封顶)
+  usage umo=napcat:GroupMessage:880072 in=1683 cached=1536 out=32
+  ctx-size umo=napcat:GroupMessage:880072 turns=20 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=8/12 chars=2497/6000 contexts=16 (未封顶)
+  usage umo=napcat:GroupMessage:880072 in=1893 cached=1664 out=33
+  ctx-size umo=napcat:GroupMessage:880072 turns=24 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=9/12 chars=2804/6000 contexts=18 (未封顶)
+  usage umo=napcat:GroupMessage:880072 in=2147 cached=1664 out=29
+  ctx-size umo=napcat:GroupMessage:880072 turns=26 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=10/12 chars=3107/6000 contexts=20 (未封顶)
+  usage umo=napcat:GroupMessage:880072 in=2008 cached=1664 out=34
+  ctx-size umo=napcat:GroupMessage:880072 turns=26 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=11/12 chars=3416/6000 contexts=22 (未封顶)
+  usage umo=napcat:GroupMessage:880072 in=2164 cached=1664 out=37
+  ctx-size umo=napcat:GroupMessage:880072 turns=28 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=12/12 chars=3723/6000 contexts=24 (未封顶)
+  usage umo=napcat:GroupMessage:880072 in=2320 cached=1664 out=45
+  ctx-size umo=napcat:GroupMessage:880072 turns=30 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=13 kept_rounds=11 kept_chars=3433 max_turns=12 max_chars=6000 dropped_rounds=2 contexts_after=22
+  usage umo=napcat:GroupMessage:880072 in=2533 cached=1664 out=39
+  ctx-size umo=napcat:GroupMessage:880072 turns=30 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=12/12 chars=3748/6000 contexts=24 (未封顶)
+  usage umo=napcat:GroupMessage:880072 in=2533 cached=1536 out=35
+  ctx-size umo=napcat:GroupMessage:880072 turns=30 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=13 kept_rounds=11 kept_chars=3442 max_turns=12 max_chars=6000 dropped_rounds=2 contexts_after=22
+  usage umo=napcat:GroupMessage:880072 in=2430 cached=1792 out=35
+  ctx-size umo=napcat:GroupMessage:880072 turns=30 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=12/12 chars=3758/6000 contexts=24 (未封顶)
+  usage umo=napcat:GroupMessage:880072 in=2284 cached=1792 out=34
+  ctx-size umo=napcat:GroupMessage:880072 turns=30 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=13 kept_rounds=11 kept_chars=3445 max_turns=12 max_chars=6000 dropped_rounds=2 contexts_after=22
+  usage umo=napcat:GroupMessage:880072 in=2304 cached=1792 out=32
+  ctx-size umo=napcat:GroupMessage:880072 turns=30 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=12/12 chars=3752/6000 contexts=24 (未封顶)
+  usage umo=napcat:GroupMessage:880072 in=2961 cached=1536 out=33
+  ctx-size umo=napcat:GroupMessage:880072 turns=32 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=13 kept_rounds=11 kept_chars=3436 max_turns=12 max_chars=6000 dropped_rounds=2 contexts_after=22
+  usage umo=napcat:GroupMessage:880072 in=2173 cached=1792 out=35
+  ctx-size umo=napcat:GroupMessage:880072 turns=28 sys_chars=1554 ctx_chars=0 parts_chars=125 tools_chars=0 total_chars=1679
+  short-term umo=napcat:GroupMessage:880072 rounds=12/12 chars=3752/6000 contexts=24 (未封顶)
+  usage umo=napcat:GroupMessage:880072 in=2777 cached=1792 out=38

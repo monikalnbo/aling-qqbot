@@ -1,0 +1,59 @@
+# 改前上下文体积取证  2026-11-11 23:03:30 CST  群=880409
+轮01 今天下班好晚，累死了  -> 回复 4 条 首条 3.3s
+轮02 我想吃你上次说的那个串串  -> 回复 4 条 首条 3.0s
+轮03 对了，我最近在学吉他，手指疼  -> 回复 4 条 首条 3.3s
+轮04 你说我该不该换个工作啊  -> 回复 4 条 首条 3.3s
+轮05 我妈又催我相亲了，烦  -> 回复 4 条 首条 2.7s
+轮06 周末我想去看电影，有什么推荐吗  -> 回复 5 条 首条 3.6s
+轮07 我养的那只猫最近老掉毛  -> 回复 4 条 首条 3.9s
+轮08 你觉得我这个人是不是太内向了  -> 回复 4 条 首条 5.1s
+轮09 刚才说到电影，我其实更喜欢科幻片  -> 回复 5 条 首条 3.6s
+轮10 我打算下个月去趟成都玩  -> 回复 4 条 首条 5.1s
+轮11 最近天气冷了，你也要多穿点  -> 回复 4 条 首条 4.5s
+轮12 我昨天梦到自己在飞，很奇怪吧  -> 回复 4 条 首条 5.1s
+轮13 算了不说这些了，陪我说会儿话  -> 回复 4 条 首条 5.1s
+轮14 你还记得我一开始跟你说过什么吗  -> 回复 4 条 首条 5.1s
+
+## 每轮上下文体积（插件日志）
+  ctx-size umo=napcat:GroupMessage:880409 turns=0 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=0/12 contexts=0 (未封顶)
+  usage umo=napcat:GroupMessage:880409 in=393 cached=1536 out=39
+  ctx-size umo=napcat:GroupMessage:880409 turns=4 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=2/12 contexts=4 (未封顶)
+  usage umo=napcat:GroupMessage:880409 in=854 cached=1536 out=40
+  ctx-size umo=napcat:GroupMessage:880409 turns=10 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=5/12 contexts=10 (未封顶)
+  usage umo=napcat:GroupMessage:880409 in=1320 cached=1536 out=32
+  ctx-size umo=napcat:GroupMessage:880409 turns=16 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=8/12 contexts=16 (未封顶)
+  usage umo=napcat:GroupMessage:880409 in=1608 cached=1536 out=39
+  ctx-size umo=napcat:GroupMessage:880409 turns=20 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=10/12 contexts=20 (未封顶)
+  usage umo=napcat:GroupMessage:880409 in=1776 cached=1664 out=35
+  ctx-size umo=napcat:GroupMessage:880409 turns=24 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=12/12 contexts=24 (未封顶)
+  usage umo=napcat:GroupMessage:880409 in=2195 cached=1536 out=41
+  ctx-size umo=napcat:GroupMessage:880409 turns=28 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=14 capped_to=11 dropped_rounds=3 contexts_before=28 contexts_after=22
+  usage umo=napcat:GroupMessage:880409 in=2346 cached=1536 out=34
+  ctx-size umo=napcat:GroupMessage:880409 turns=30 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=15 capped_to=11 dropped_rounds=4 contexts_before=30 contexts_after=22
+  usage umo=napcat:GroupMessage:880409 in=2209 cached=1536 out=29
+  ctx-size umo=napcat:GroupMessage:880409 turns=28 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=14 capped_to=11 dropped_rounds=3 contexts_before=28 contexts_after=22
+  usage umo=napcat:GroupMessage:880409 in=2449 cached=1536 out=36
+  ctx-size umo=napcat:GroupMessage:880409 turns=30 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=15 capped_to=11 dropped_rounds=4 contexts_before=30 contexts_after=22
+  usage umo=napcat:GroupMessage:880409 in=2260 cached=1536 out=35
+  ctx-size umo=napcat:GroupMessage:880409 turns=28 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=14 capped_to=11 dropped_rounds=3 contexts_before=28 contexts_after=22
+  usage umo=napcat:GroupMessage:880409 in=2428 cached=1536 out=47
+  ctx-size umo=napcat:GroupMessage:880409 turns=30 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=15 capped_to=11 dropped_rounds=4 contexts_before=30 contexts_after=22
+  usage umo=napcat:GroupMessage:880409 in=2718 cached=1536 out=38
+  ctx-size umo=napcat:GroupMessage:880409 turns=30 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=15 capped_to=11 dropped_rounds=4 contexts_before=30 contexts_after=22
+  usage umo=napcat:GroupMessage:880409 in=2337 cached=1536 out=36
+  ctx-size umo=napcat:GroupMessage:880409 turns=28 sys_chars=1554 ctx_chars=0 total_chars=1554
+  short-term umo=napcat:GroupMessage:880409 rounds=14 capped_to=11 dropped_rounds=3 contexts_before=28 contexts_after=22
+  usage umo=napcat:GroupMessage:880409 in=2560 cached=1536 out=34
