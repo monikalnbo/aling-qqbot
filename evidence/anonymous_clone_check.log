@@ -1,0 +1,36 @@
+# 匿名 clone 后的可运行性检查（2026-11-11 21:44:40 CST）
+# repo: https://github.com/monikalnbo/aling-qqbot
+# commit: ebc6794 fix(scripts): 管理员 QQ 号改为从环境变量 ADMIN_ID 读取
+
+## 1. python3 -m compileall plugins scripts dafeiyu bot.py
+compileall exit=0（无语法错误）
+
+## 2. JSON 配置逐一解析
+ok astrbot/data/astrbot/cmd_config.json
+ok astrbot/data/astrbot/config/astrbot_plugin_aling_memory_config.json
+ok plugins/astrbot_plugin_aling_memory/_conf_schema.json
+
+## 3. 人设导入脚本 dry-run（临时空库）
+[dry-run] persona 'aling' 不存在，将插入，正文 714 字
+[bootstrap] 完成。默认人格请在 AstrBot 配置里确认 agent_runner.config.persona.persona_id = 'aling'
+dry-run exit=0
+
+## 4. 关键文件是否存在
+ok  README.md
+ok  requirements.txt
+ok  astrbot/compose.yml
+ok  astrbot/.env.example
+ok  astrbot/persona_aling.txt
+ok  astrbot/data/astrbot/cmd_config.json
+ok  plugins/astrbot_plugin_aling_memory/main.py
+
+## 5. 示例配置里的凭据字段
+dashboard.password        = ''
+dashboard.pbkdf2_password = ''
+dashboard.jwt_secret      = ''
+totp.secret               = ''
+admins_id                 = ['astrbot', '123456789']
+ws_reverse_token          = ''
+provider key              = ['$DEEPSEEK_API_KEY']
+persona_id                = aling
+segmented_reply.enable    = True
