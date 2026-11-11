@@ -1,10 +1,10 @@
 name: astrbot_plugin_aling_memory
 display_name: 阿凌 · 三层记忆
 author: aling
-version: 1.0.1
-desc: 为阿凌提供按 QQ 号归档的三层记忆：短期上下文封顶、中期会话摘要、长期事实条目（跨会话/重启保留），并补充 unified_id 身份锚点。
+version: 1.0.2
+desc: 为阿凌提供按 QQ 号归档的三层记忆：短期上下文封顶、中期会话摘要、长期事实条目（跨会话/重启保留），并补充 unified_id 身份锚点；回复出口会拦掉念出来的 QQ 号。
 short_desc: 按 QQ 号归档的三层记忆 + 身份锚点
-repo: https://github.com/example/astrbot_plugin_aling_memory
+repo: https://github.com/monikalnbo/aling-qqbot
 astrbot_version: ">=4.29.0,<5"
 support_platforms:
   - aiocqhttp
