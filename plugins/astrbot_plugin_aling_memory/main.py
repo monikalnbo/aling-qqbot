@@ -45,12 +45,19 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "long_term_extract_every_turns": 1,
     "long_term_top_k": 6,
     "long_term_scope": "owner_only",
+    "reply_strip_qq": True,
     "debug_log": True,
 }
 
 SUMMARY_HEADER = "【会话摘要（本地记忆插件生成，覆盖更早的对话）】"
 FACT_HEADER = "【长期记忆：{qq} 本人相关档案】"
 IDENTITY_START = "<system_reminder>"
+
+# 兜底：模型偶尔仍会把内部编号念出来（如「<你的管理员QQ号> 你刚说什么」）。
+# 只处理完整的 5 位以上数字串：数字串后面直接跟中文/标点时补一个空格再删，
+# 绝不吞掉正常标点；15 位以上的长数字（如天气时间戳）保持原样，避免误伤。
+_QQ_RUN_RE = re.compile(r"(?<![0-9])([0-9]{5,14})(?![0-9])")
+_CN_CHAR_RE = re.compile(r"[\u4e00-\u9fff]")
 
 SUMMARY_PROMPT = (
     "把下面这段群聊/私聊记录压缩成一段中文摘要，供之后的对话继续使用。\n"
@@ -101,6 +108,7 @@ class AlingMemoryPlugin(Star):
         self._inflight: set[str] = set()
 
     async def initialize(self) -> None:
+        self._last_umo = ""
         self.log(
             f"初始化完成 dir={self.data_dir} max_turns={self.cfg['short_term_max_turns']} "
             f"mid={self.cfg['mid_term_enable']} long={self.cfg['long_term_enable']} "
@@ -224,6 +232,7 @@ class AlingMemoryPlugin(Star):
     @filter.on_llm_request()
     async def on_llm_request(self, event: AstrMessageEvent, req: ProviderRequest):
         umo = event.unified_msg_origin
+        self._last_umo = umo
         qq = event.get_sender_id() or ""
         name = event.get_sender_name() or ""
 
@@ -392,6 +401,10 @@ class AlingMemoryPlugin(Star):
     # -------------------------------------------------------- 长期事实抽取
     @filter.on_llm_response()
     async def on_llm_response(self, event: AstrMessageEvent, resp: LLMResponse):
+        # 0) 出口兜底：任何 5~14 位连续数字都当作 QQ 号念出来了，直接删掉
+        if self.cfg.get("reply_strip_qq", True):
+            self._strip_qq_from_reply(resp, event)
+
         if not self.cfg.get("long_term_enable", True):
             return
         umo = event.unified_msg_origin
@@ -434,6 +447,29 @@ class AlingMemoryPlugin(Star):
                 saved += 1
         if saved:
             self.log(f"fact umo={umo} qq={qq} saved={saved}")
+
+    def _strip_qq_from_reply(self, resp: LLMResponse, event: AstrMessageEvent) -> None:
+        text = resp.completion_text or ""
+        if not text:
+            return
+
+        def _repl(m: re.Match[str]) -> str:
+            return " "
+
+        fixed = _QQ_RUN_RE.sub(_repl, text)
+        if fixed == text:
+            return
+        # 删除后可能留下「。 」这类空隙，统一收一下标点周围的空格
+        fixed = re.sub(r"[ \t]+([，。！？；：、,.!?;:）)\]】」』])", r"\1", fixed)
+        fixed = re.sub(r"([（(\[【「『])[ \t]+", r"\1", fixed)
+        # 删完可能只剩一对空括号，一并收掉；行首空格也收掉
+        fixed = re.sub(r"[（(\[【「『][ \t]*[）)\]】」』]", "", fixed)
+        fixed = re.sub(r"^[ \t]+", "", fixed, flags=re.M)
+        fixed = re.sub(r"[ \t]{2,}", " ", fixed)
+        resp.completion_text = fixed
+        hit = _QQ_RUN_RE.findall(text)
+        umo = getattr(event, "unified_msg_origin", "-")
+        self.log(f"reply-strip-qq umo={umo} removed={hit}")
 
     # ------------------------------------------------------------- 调试指令
     @filter.command("mem")

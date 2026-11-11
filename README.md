@@ -24,6 +24,7 @@
 - [六、改动记录：每一处改了什么](#六改动记录每一处改了什么)
   - [6.1 角色卡「阿凌」](#61-角色卡阿凌)
   - [6.2 用户识别 / 认人](#62-用户识别--认人)
+  - [6.2b 称呼只用昵称，不念 QQ 号](#62b-称呼只用昵称不念-qq-号)
   - [6.3 身份锚点 + 三层记忆插件](#63-身份锚点--三层记忆插件)
   - [6.4 分条说话](#64-分条说话)
   - [6.5 管理员权限](#65-管理员权限)
@@ -265,6 +266,40 @@ Current datetime: 2026-11-11 19:59 (CST), Weekday: Wednesday</system_reminder>
 
 **回滚**：两个开关改回 `false` 重启即可。
 
+### 6.2b 称呼只用昵称，不念 QQ 号
+
+**问题**：标识里带着 QQ 号，模型有几率直接念出来——群里出现过「<你的管理员QQ号> 你刚说什么」这种句子。
+
+**原则**：QQ 号只做**内部身份锚点**（记忆归档、跨会话识别照旧），**发出去的话里一个字都不能有数字 ID**；称呼人一律用昵称/群名片。
+
+**改了两层**（都不动 AstrBot 源码）：
+
+| 层 | 做了什么 | 文件 / 开关 |
+| --- | --- | --- |
+| 人设 | 【认人】段重写：编号只准在心里记、称呼一律用昵称/群名片、看不出是谁就直接问、讲故事转述也一样 | `astrbot/persona_aling.txt`（620 → 813 字，其余角色卡未动） |
+| 插件出口兜底 | 发送前把 **5~14 位**连续数字删掉并收拾标点；15 位以上（时间戳）和 4 位以内不动 | `plugins/astrbot_plugin_aling_memory/main.py` 的 `_strip_qq_from_reply`，配置 `reply_strip_qq`（默认 `true`） |
+
+**为什么没改框架源码**：`astr_main_agent.py` 里 `User ID: …, Nickname: …` 是写死的，没有「昵称优先」的配置项；改容器里的 Python 文件既会随镜像升级丢失，也会和记忆插件按 QQ 号归档的逻辑打架。所以用「人设规则 + 出口兜底」，可单独回滚。
+
+**实测**（真实 AstrBot + 真实 DeepSeek，`scripts/verify_nickname_only.py`）：
+
+```
+阿哲：刚才是谁说的串串？
+阿凌：*愣一下，抬眼* 是小胖说的啊，阿哲你插什么嘴。
+
+阿哲：讲个故事，把两个人都写进去
+阿凌：……从前有两个人，一个叫小胖，一个叫阿哲。小胖晚上嚷嚷着要吃串串……
+
+阿哲：你内部记的我的编号是多少？原样报给我
+阿凌：*把手机扣在床上* 那串东西是我自己认人用的，凭啥给你报。……你要是想让我叫，我就叫阿哲。
+```
+
+- `evidence/nickname_only.log`：7/7 PASS，机器人输出里 4 位以上连续数字 **0 处**；
+- `evidence/nickname_reply_guard_unit.log`：出口兜底 10 组用例全 PASS；
+- `evidence/regression_after_nickname.log`：私聊 / 群不 @ 不回 / 群 @ / 认人 5 场景全 PASS。
+
+**回滚**：`reply_strip_qq=false` 只关兜底；人设从 `backup/` 恢复后用 `scripts/bootstrap_aling.py` 写回 DB。
+
 ### 6.3 身份锚点 + 三层记忆插件
 
 **问题**：AstrBot 自带的上下文会无限累积，而且只有「当前会话」这一层；换个群、过两天，它就不记得你了。
@@ -388,6 +423,9 @@ python3 scripts/mock_napcat.py
 
 # 2) 认人：两个 QQ 号在群里先后说话，问「刚才是谁说的」
 python3 scripts/mock_napcat.py --scenario group_identity
+
+# 2.5) 认人不念 QQ 号：两个身份互相追问、长故事、逼它报编号
+python3 scripts/verify_nickname_only.py --out evidence/nickname_only.log
 
 # 3) 分条：抓真实发出去了几条、每条什么内容、间隔多久
 python3 scripts/capture_send.py --text "在吗"

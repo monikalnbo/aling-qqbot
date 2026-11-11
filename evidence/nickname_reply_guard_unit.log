@@ -1,0 +1,19 @@
+# _strip_qq_from_reply(resp, event)
+[PASS] '<你的管理员QQ号> 你刚说什么' -> '你刚说什么'  (期望 '你刚说什么')
+[PASS] '<你的管理员QQ号>你刚说什么' -> '你刚说什么'  (期望 '你刚说什么')
+[PASS] '小胖（222333）说想吃串串' -> '小胖说想吃串串'  (期望 '小胖说想吃串串')
+[PASS] '阿哲，333444，别再问了' -> '阿哲，，别再问了'  (期望 '阿哲，，别再问了')
+[PASS] '222333 你刚说什么' -> '你刚说什么'  (期望 '你刚说什么')
+[PASS] '杂口杂口。。。' -> '杂口杂口。。。'  (期望 '杂口杂口。。。')
+[PASS] '现在是 2026-11-11 22:20:38，该睡了。' -> '现在是 2026-11-11 22:20:38，该睡了。'  (不变)
+[PASS] '我 12 点就睡了，明天 8 点叫你。' -> '我 12 点就睡了，明天 8 点叫你。'  (不变)
+[PASS] '她说 12345 遍都想吃串串' -> '她说 遍都想吃串串'  (期望 '她说 遍都想吃串串')
+[PASS] '*翻了个身* 小胖，222333。' -> '*翻了个身* 小胖，。'  (期望 '*翻了个身* 小胖，。')
+ALL PASS
+[22:24:46.705] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:124]: [aling-memory] reply-strip-qq umo=- removed=['<你的管理员QQ号>']
+[22:24:46.705] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:124]: [aling-memory] reply-strip-qq umo=- removed=['<你的管理员QQ号>']
+[22:24:46.706] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:124]: [aling-memory] reply-strip-qq umo=- removed=['222333']
+[22:24:46.706] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:124]: [aling-memory] reply-strip-qq umo=- removed=['333444']
+[22:24:46.706] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:124]: [aling-memory] reply-strip-qq umo=- removed=['222333']
+[22:24:46.706] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:124]: [aling-memory] reply-strip-qq umo=- removed=['12345']
+[22:24:46.707] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:124]: [aling-memory] reply-strip-qq umo=- removed=['222333']

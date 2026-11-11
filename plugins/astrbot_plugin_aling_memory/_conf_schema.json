@@ -62,5 +62,11 @@
     "type": "bool",
     "default": true,
     "hint": "把注入摘要、条数、身份行写进插件日志，便于排查"
+  },
+  "reply_strip_qq": {
+    "description": "回复里禁止出现 QQ 号（出口兜底）",
+    "type": "bool",
+    "default": true,
+    "hint": "模型万一还是把内部编号念出来，在发送前把 5~14 位连续数字删掉；记忆归档仍按 QQ 号，不受影响"
   }
 }

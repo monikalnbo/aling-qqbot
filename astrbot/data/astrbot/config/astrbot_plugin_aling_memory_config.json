@@ -8,5 +8,6 @@
     "long_term_extract_every_turns": 1,
     "long_term_top_k": 6,
     "long_term_scope": "owner_only",
-    "debug_log": true
+    "debug_log": true,
+    "reply_strip_qq": true
 }
