@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import asyncio
 import json
 import sys
@@ -23,7 +24,7 @@ import time
 
 SELF_ID = 10000
 BOT_NAME = "大肥鱼测试号"
-ADMIN_ID = <你的管理员QQ号>  # 2026-11-11 加入 admins_id 的 QQ 号
+ADMIN_ID = int(os.environ.get("ADMIN_ID", "123456789"))  # 你的管理员 QQ 号，跑验证前 export ADMIN_ID=...
 
 
 def fresh_id(offset: int = 0) -> int:

@@ -1,22 +1,23 @@
 """验证 AstrBot v4.29.4 的管理员机制：admins_id 里的 QQ 能执行管理员指令，普通号被拒。
 
-用法：
-    python3 scripts/verify_admin.py \
-        --out evidence/admin_verify.log
+用法（管理员 QQ 号从环境变量读，别写死在脚本里）：
+    export ADMIN_ID=<你的管理员QQ号>
+    python3 scripts/verify_admin.py --out evidence/admin_verify.log
 
 检查项：
-1. 管理员 <你的管理员QQ号> 私聊 /provider        -> 应输出 Provider 列表
+1. 管理员 $ADMIN_ID 私聊 /provider        -> 应输出 Provider 列表
 2. 普通号 333444 私聊 /provider            -> 应被拒（权限不足）
-3. 管理员 <你的管理员QQ号> 群聊 @ /sid           -> /sid 对所有人生效（不是管理员指令，仅作对照）
-4. 管理员 <你的管理员QQ号> 群聊 @ /provider      -> 群聊里也应放行
+3. 管理员 $ADMIN_ID 群聊 @ /sid           -> /sid 对所有人生效（不是管理员指令，仅作对照）
+4. 管理员 $ADMIN_ID 群聊 @ /provider      -> 群聊里也应放行
 5. 普通号 333444 群聊 @ /provider          -> 群聊里也应被拒
 6. 普通号 333444 私聊 /name 测试别名       -> 被拒（ADMIN 级）
-7. 管理员 <你的管理员QQ号> 私聊 /name 管理员别名 -> 生效（ADMIN 级，另一位指令）
+7. 管理员 $ADMIN_ID 私聊 /name 管理员别名 -> 生效（ADMIN 级，另一位指令）
 """
 
 from __future__ import annotations
 
 import argparse
+import os
 import asyncio
 import json
 import sys
@@ -24,7 +25,7 @@ import time
 
 SELF_ID = 10000
 BOT_NAME = "大肥鱼测试号"
-ADMIN_ID = <你的管理员QQ号>
+ADMIN_ID = int(os.environ.get("ADMIN_ID", "123456789"))  # 你的管理员 QQ 号，跑验证前 export ADMIN_ID=...
 MEMBER_ID = 333444
 
 
