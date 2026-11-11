@@ -73,7 +73,7 @@
 | `astrbot/persona_aling.txt` | **阿凌角色卡原文**，复制进 WebUI 或脚本导入 |
 | `astrbot/data/astrbot/cmd_config.json` | AstrBot 的**示例配置**（已把本项目的改动都配好，密码/管理员号是占位符） |
 | `astrbot/data/astrbot/config/astrbot_plugin_aling_memory_config.json` | 记忆插件配置示例 |
-| `plugins/astrbot_plugin_aling_memory/` | 自研三层记忆插件源码 |
+| `plugins/astrbot_plugin_aling_memory/` | 自研插件源码：三层记忆 + 群聊全量存档 + 按需回看 |
 | `scripts/` | 离线自测、分段抓帧、权限/记忆验证脚本 |
 | `evidence/` | 上述能力的实测日志（已清除个人信息） |
 | `docs/` | 中文文档：上手说明 / 运行状态 / 实测记录 / 选型对比 / 调研 / 交付报告 |
@@ -215,7 +215,9 @@ AstrBot 的默认行为（本项目实测）：
 | `/reset` | 清空当前会话上下文 |
 | `/help` | 看指令列表 |
 | `/sid` | 看当前会话 ID |
-| `/mem status` | 看插件三层记忆状态（管理员/所有者可用） |
+| `/mem status` | 看插件三层记忆 + 群聊存档状态（管理员可用） |
+| `/mem recent` | 看本群最近 10 条存档原文（管理员可用） |
+| `/mem log <关键词>` | 按关键词翻本群存档（管理员可用） |
 
 > **踩坑提示**：`platform_settings.enable_id_white_list` 默认为 `false` 才正常。如果它是 `true`，所有消息会被**静默拦截**——发了没反应、日志也没报错，非常容易误判成「反向 WS 没通」。
 
@@ -324,6 +326,24 @@ Current datetime: 2026-11-11 19:59 (CST), Weekday: Wednesday</system_reminder>
 **调试**：`/mem status`（所有者/管理员可用）。
 
 > 设计取舍：全部存在 AstrBot 自带的 SQLite 里，**不引入向量库、不额外调用 API**，零额外成本；代价是「相关性」只是关键字/时间加权，不是语义检索。
+
+#### 6.3.1 群聊全量存档 + 按需回看（1.1.0）
+
+**问题**：AstrBot 对群聊有「门铃」机制——**没 @ 机器人的消息在框架层就被丢掉了**，模型完全看不见。所以它在群里其实是个聋子，只会回应被点名的那几句。
+
+**做了什么**（同一个插件，不新增依赖）：
+
+| 层 | 机制 | 会不会打扰 |
+| --- | --- | --- |
+| 记账 | 群里每条消息（发送者 QQ/昵称/群名片、群号、时间、正文、是否 @ 了它）写进 SQLite 的 `group_messages` 表 | 不会：这个钩子不调模型，**0 回复**（实测 5 条群聊 0 回复） |
+| 日常 | 原三层记忆不动，短期仍 12 轮封顶 | 不查库、不加成本 |
+| 回看 | 只有问到**过去的事**（「刚才」「昨天」「谁说的」「聊了什么」…）才检索存档，把相关原文摘进这一轮回答 | 不触发不查；触发时只多一次本地查询 |
+
+泛问（「刚才群里谁说了什么」）除关键词命中外还会补最近 10~12 条原文窗口，避免只答一个人；注入的显示名只有昵称/群名片，提示词明确「绝不念数字 ID」。
+
+**验收**：`scripts/verify_group_archive.py`（mock NapCat 走真实 AstrBot + 真实 DeepSeek）**10 项全 PASS、exit=0**，输出 `evidence/group_archive.log`。
+
+**关掉**：插件配置里 `group_archive_enable` / `recall_enable` 改 `false` 重启；整体回滚见 `docs/运行状态.md` §4.8。
 
 ### 6.4 分条说话
 

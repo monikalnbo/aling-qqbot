@@ -2,8 +2,13 @@
 
 三层结构
 --------
+群聊存档：`on_group_message` 监听群内每条消息（**包括没 @ 阿凌的**），原样写进
+      本地 group_messages 表。只记不打扰：不触发回复、不额外调模型、不发消息。
+
 短期：`on_llm_request` 里把 `req.contexts` 裁到最近 N 轮（整轮裁剪，保留 system）。
       上下文条数恒定封顶，成本不随聊天时长增长。
+回看：只在「被问到过去的事 / 判断信息不足」时，才去 group_messages 里按关键词
+      或最近时间取几段原文塞进当次请求；日常请求不查库，不涨成本。
 中期：被裁掉的旧轮 + 空闲超时的旧轮，交给 LLM 压成一段摘要，按会话（群号/私聊QQ号）
       存进 session_summaries，下次请求时以「会话摘要」块注入。
 长期：每 N 轮让 LLM 从最近对话里抽取关键事实（称呼/偏好/约定/干过的事），按
@@ -15,7 +20,8 @@
 在 AstrBot 自带 `User ID/Nickname` 之外，追加一行 unified_id
 （平台:消息类型:会话:QQ号），把平台 user_id 与 unified_id 对齐，昵称只作显示名。
 
-AA调试命令：`/mem status`、`/mem facts [QQ号]`、`/mem summary`、`/mem fact <文本>`、`/mem forget [QQ号]`
+调试命令：`/mem status`、`/mem facts [QQ号]`、`/mem summary`、`/mem fact <文本>`、
+`/mem forget [QQ号]`、`/mem recent`（本群最近 10 条存档）、`/mem log <关键词>`（手动回看）
 """
 
 from __future__ import annotations
@@ -46,6 +52,12 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "long_term_top_k": 6,
     "long_term_scope": "owner_only",
     "reply_strip_qq": True,
+    "group_archive_enable": True,
+    "group_archive_max_rows": 20000,
+    "group_archive_store_bot": True,
+    "recall_enable": True,
+    "recall_top_k": 8,
+    "recall_scan": 2000,
     "debug_log": True,
 }
 
@@ -53,11 +65,32 @@ SUMMARY_HEADER = "【会话摘要（本地记忆插件生成，覆盖更早的�
 FACT_HEADER = "【长期记忆：{qq} 本人相关档案】"
 IDENTITY_START = "<system_reminder>"
 
-# 兜底：模型偶尔仍会把内部编号念出来（如「<你的管理员QQ号> 你刚说什么」）。
+# 兜底：模型偶尔仍会把内部编号念出来（如「一串数字 你刚说什么」）。
 # 只处理完整的 5 位以上数字串：数字串后面直接跟中文/标点时补一个空格再删，
 # 绝不吞掉正常标点；15 位以上的长数字（如天气时间戳）保持原样，避免误伤。
 _QQ_RUN_RE = re.compile(r"(?<![0-9])([0-9]{5,14})(?![0-9])")
 _CN_CHAR_RE = re.compile(r"[\u4e00-\u9fff]")
+
+ARCHIVE_HEADER = "【群里刚才的聊天记录（本地存档摘录，按时间正序）】"
+
+# 「回看」触发词：只有问过去的事、或者明说自己不知道时才查库。
+# 日常「在吗」「吃了吗」这类不该命中，保证日常请求不查库、不加成本。
+RECALL_TRIGGER_RE = re.compile(
+    r"(刚才|刚刚|刚说|刚聊|之前|以前|上次|上回|上一条|昨天|前天|昨晚|今早|早上|上午|中午|下午|晚上|"
+    r"这几天|最近|半天|一会儿前|"
+    r"谁说的|谁说了|谁说|哪个说的|谁提到|谁在说|说的是谁|"
+    r"聊了什么|聊了啥|说了什么|说了啥|讲了什么|讲了啥|发生了什么|发生什么|怎么回事|什么情况|"
+    r"记得|记不记得|还记得|想不起来|不记得|"
+    r"历史|记录|翻旧账|回看|查一下|帮我查|找一下|搜一下|"
+    r"at 我|艾特我|叫我了)"
+)
+
+# 泛问：问的是「刚才/那群人/大家」的整体情况，而不是某个具体话题。
+# 这类问题只按关键词取几条会把别的说话人漏掉，要再补一段最近原文。
+RECALL_BROAD_RE = re.compile(
+    r"(群里|群聊|大家|都聊了什么|都说了什么|聊了什么|聊了啥|说了什么|说了啥|讲了什么|讲了啥|"
+    r"发生了什么|发生什么|怎么回事|什么情况|谁说了什么|谁说了啥|说了些什么)"
+)
 
 SUMMARY_PROMPT = (
     "把下面这段群聊/私聊记录压缩成一段中文摘要，供之后的对话继续使用。\n"
@@ -92,8 +125,8 @@ FACT_PROMPT = (
 @register(
     "astrbot_plugin_aling_memory",
     "aling",
-    "按 QQ 号归档的三层记忆：短期封顶 + 中期摘要 + 长期事实条目，并补充 unified_id 身份锚点",
-    "1.0.0",
+    "按 QQ 号归档的三层记忆 + 群聊全量存档与按需回看，并补充 unified_id 身份锚点",
+    "1.1.0",
 )
 class AlingMemoryPlugin(Star):
     def __init__(self, context: Context, config: dict | None = None) -> None:
@@ -112,7 +145,10 @@ class AlingMemoryPlugin(Star):
         self.log(
             f"初始化完成 dir={self.data_dir} max_turns={self.cfg['short_term_max_turns']} "
             f"mid={self.cfg['mid_term_enable']} long={self.cfg['long_term_enable']} "
-            f"scope={self.cfg['long_term_scope']} facts={self.store.count_facts()}"
+            f"scope={self.cfg['long_term_scope']} facts={self.store.count_facts()} "
+            f"archive={self.cfg.get('group_archive_enable', True)} "
+            f"archived={self.store.count_group_messages()} "
+            f"recall={self.cfg.get('recall_enable', True)}"
         )
 
     async def terminate(self) -> None:
@@ -220,6 +256,118 @@ class AlingMemoryPlugin(Star):
             f"身份锚点(unified_id): {umo} | platform_id={qq} | 显示名={name or 'N/A'}"
             f" | {kind} {place}；本会话里「{qq}」是唯一稳定身份，昵称可能变化或重名"
         )
+
+    # --------------------------------------------------------- 记账层（存档）
+    @staticmethod
+    def _comp_type(comp: Any) -> str:
+        t = getattr(comp, "type", "")
+        return str(getattr(t, "value", t) or "").lower()
+
+    @classmethod
+    def _plain_text(cls, event: AstrMessageEvent) -> str:
+        """把消息里的纯文本拼起来；@ 段换成「@某人」，其它非文本段用占位符。"""
+        parts: list[str] = []
+        try:
+            chain = event.get_messages() or []
+        except Exception:  # noqa: BLE001
+            chain = []
+        for comp in chain:
+            name = cls._comp_type(comp)
+            if name == "plain":
+                parts.append(str(getattr(comp, "text", "")))
+            elif name == "at":
+                qq = str(getattr(comp, "qq", ""))
+                nm = str(getattr(comp, "name", "") or "")
+                if qq == str(event.get_self_id()):
+                    parts.append("@阿凌")
+                else:
+                    parts.append(f"@{nm or qq}")
+            elif name == "reply":
+                parts.append("〔回复〕")
+            elif name in ("image", "record", "video", "file"):
+                parts.append(
+                    f"〔{ {'image': '图片', 'record': '语音', 'video': '视频', 'file': '文件'}[name] }〕"
+                )
+        text = "".join(parts).strip()
+        if not text:
+            text = (getattr(event, "message_str", "") or "").strip()
+        return text
+
+    def _group_meta(self, event: AstrMessageEvent) -> tuple[str, str, str]:
+        gid = str(event.get_group_id() or "")
+        gname = ""
+        try:
+            g = event.get_group()
+            gname = str(getattr(g, "group_name", "") or "") if g else ""
+        except Exception:  # noqa: BLE001
+            gname = ""
+        nick = event.get_sender_name() or ""
+        card = ""
+        try:
+            raw = getattr(event.message_obj, "raw_message", None)
+            sender = getattr(raw, "sender", None)
+            if isinstance(sender, dict):
+                card = str(sender.get("card") or "")
+            elif sender is not None:
+                card = str(getattr(sender, "card", "") or "")
+        except Exception:  # noqa: BLE001
+            card = ""
+        return gid, gname, (card or nick)
+
+    @filter.event_message_type(filter.EventMessageType.GROUP_MESSAGE, priority=10)
+    async def on_group_message(self, event: AstrMessageEvent):
+        """群聊每条消息都落库（含没 @ 阿凌的）。只记不打扰：不回复、不调模型。"""
+        if not self.cfg.get("group_archive_enable", True):
+            return
+        try:
+            text = self._plain_text(event)
+            if not text:
+                return
+            umo = event.unified_msg_origin
+            gid, gname, card = self._group_meta(event)
+            mid = ""
+            try:
+                mid = str(getattr(event.message_obj, "message_id", "") or "")
+            except Exception:  # noqa: BLE001
+                mid = ""
+            ts = 0.0
+            try:
+                ts = float(getattr(event.message_obj, "timestamp", 0) or 0)
+            except (TypeError, ValueError):
+                ts = 0.0
+            if ts <= 0:
+                ts = time.time()
+            at_bot = False
+            try:
+                self_id = str(event.get_self_id())
+                at_bot = any(
+                    str(getattr(c, "qq", "")) == self_id
+                    for c in (event.get_messages() or [])
+                    if self._comp_type(c) == "at"
+                )
+            except Exception:  # noqa: BLE001
+                at_bot = False
+            rid = self.store.add_group_message(
+                umo=umo,
+                group_id=gid,
+                group_name=gname,
+                message_id=mid,
+                ts=ts,
+                qq_id=str(event.get_sender_id() or ""),
+                nickname=event.get_sender_name() or "",
+                card=card,
+                role="user",
+                text=text,
+                at_bot=at_bot,
+                max_rows=int(self.cfg.get("group_archive_max_rows", 20000) or 0),
+            )
+            if rid:
+                self.log(
+                    f"archive umo={umo} gid={gid} qq={event.get_sender_id()} "
+                    f"at={int(at_bot)} id={rid} text={text[:60]!r}"
+                )
+        except Exception as e:  # noqa: BLE001  记账失败绝不能影响正常聊天
+            logger.warning(f"[aling-memory] 群消息存档失败：{e}")
 
     def _request_wants_identity(self) -> bool:
         try:
@@ -381,10 +529,105 @@ class AlingMemoryPlugin(Star):
                     f"picked={len(ranked)} scope={scope}"
                 )
 
+        # 5) 回看：只在问到过去的事时才查存档，日常请求不查库
+        recall_block = self._recall_block(event, req)
+        if recall_block:
+            intro.append({"role": "user", "content": recall_block})
+            intro.append({"role": "assistant", "content": "（已翻到这几位刚才说的话。）"})
+
         if intro:
             req.contexts = head + intro + (
                 req.contexts[len(head) :] if head else list(req.contexts)
             )
+
+    # --------------------------------------------------------- 回看层（检索）
+    @staticmethod
+    def _recall_query(text: str) -> str:
+        """把「刚才谁说的串串」这类提问洗成检索关键词。"""
+        q = re.sub(r"<system_reminder>.*?</system_reminder>", " ", text or "", flags=re.S)
+        q = re.sub(r"@\S+", " ", q)
+        # 去掉纯提问词，留下「实体词」用来匹配
+        q = re.sub(
+            r"(刚才|刚刚|之前|以前|上次|上回|昨天|前天|最近|谁说的|谁说了|谁说|哪个人|哪个|"
+            r"聊了什么|聊了啥|说了什么|说了啥|讲了什么|讲了啥|发生了什么|怎么回事|什么情况|"
+            r"记得|还记得|想不起来|不记得|历史|记录|回看|查一下|帮我查|找一下|搜一下|"
+            r"群里|大家|清楚|主要|具体|谁|"
+            r"吗|呢|啊|呀|吧|了|的|是|在|说|话|有|没|和|跟|个|吧)",
+            " ",
+            q,
+        )
+        return " ".join(q.split())[:80]
+
+    def _recall_block(self, event: AstrMessageEvent, req: ProviderRequest) -> str:
+        if not self.cfg.get("recall_enable", True):
+            return ""
+        if not event.get_group_id():
+            return ""
+        ask = (getattr(event, "message_str", "") or "").strip()
+        if not ask:
+            return ""
+        if not RECALL_TRIGGER_RE.search(ask):
+            self.log(f"recall-skip umo={event.unified_msg_origin} reason=no-trigger")
+            return ""
+        umo = event.unified_msg_origin
+        top_k = max(1, int(self.cfg.get("recall_top_k", 8)))
+        scan = max(top_k, int(self.cfg.get("recall_scan", 2000)))
+        keyword = self._recall_query(ask)
+        # 问「刚才/群里都聊了啥」这类泛问：光按关键词命中的几条会把别的人漏掉，
+        # 所以再取一段最近的原文窗口，跟命中结果合并，保证人人都看得到。
+        broad = not keyword or bool(RECALL_BROAD_RE.search(ask))
+        try:
+            hits: list[Any] = []
+            if keyword:
+                hits = list(
+                    self.store.search_group_messages(
+                        umo, keyword, limit=top_k, scan=scan
+                    )
+                )
+            if broad:
+                merged: dict[Any, Any] = {int(r["id"]): r for r in hits}
+                for r in self.store.recent_group_messages(umo, limit=max(top_k, 10)):
+                    merged.setdefault(int(r["id"]), r)
+                rows = sorted(
+                    merged.values(), key=lambda r: (float(r["ts"]), int(r["id"]))
+                )[-max(top_k, 12):]
+            elif hits:
+                rows = hits
+            else:
+                # 有具体关键词但没命中：退回最近原文，别让模型凭空猜
+                rows = self.store.recent_group_messages(umo, limit=max(top_k, 8))
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"[aling-memory] 历史检索失败：{e}")
+            return ""
+        if not rows:
+            self.log(f"recall umo={umo} keyword={keyword!r} hits=0")
+            return ""
+        keyword = f"{keyword} |broad" if broad else keyword
+        lines: list[str] = []
+        prev_day = ""
+        for r in rows:
+            t = time.strftime("%m-%d %H:%M", time.localtime(float(r["ts"])))
+            day = t[:5]
+            if day != prev_day:
+                lines.append(f"— {day} ——")
+                prev_day = day
+            who = str(r["card"] or r["nickname"] or r["qq_id"] or "某人").strip()
+            text = str(r["text"]).replace("\n", " ")[:120]
+            lines.append(f"[{t}] {who}: {text}")
+        body = "\n".join(lines)
+        self.log(
+            f"recall umo={umo} keyword={keyword!r} hits={len(rows)} chars={len(body)}"
+        )
+        return (
+            f"{ARCHIVE_HEADER}\n"
+            "这是阿凌自己翻本地存档查到的原文，只有当前这一轮可见。\n"
+            "回答要求：\n"
+            "1. 只依据上面的记录回答，记录里没有的就直说没看到，别编；\n"
+            "2. 提到人只用昵称/群名片（上面已经给的是显示名），绝对不要念任何数字 ID；\n"
+            "3. 复述别人的话时，说清楚是谁说的、大概什么时候；\n"
+            "4. 不要整段照抄记录，用自己的话转述 2~4 句就够。\n"
+            f"{body}"
+        )
 
     def _all_group_facts(self, umo: str) -> list[Any]:
         try:
@@ -447,6 +690,42 @@ class AlingMemoryPlugin(Star):
                 saved += 1
         if saved:
             self.log(f"fact umo={umo} qq={qq} saved={saved}")
+
+    @filter.on_llm_response()
+    async def archive_bot_reply(self, event: AstrMessageEvent, resp: LLMResponse):
+        """把阿凌自己说过的话也存进群存档，回看时能对上「我问了什么、它答了什么」。"""
+        if not self.cfg.get("group_archive_enable", True):
+            return
+        if not self.cfg.get("group_archive_store_bot", True):
+            return
+        if not event.get_group_id():
+            return
+        text = (resp.completion_text or "").strip()
+        if not text:
+            return
+        try:
+            gid, gname, _ = self._group_meta(event)
+            mid = ""
+            try:
+                mid = str(getattr(event.message_obj, "message_id", "") or "")
+            except Exception:  # noqa: BLE001
+                mid = ""
+            self.store.add_group_message(
+                umo=event.unified_msg_origin,
+                group_id=gid,
+                group_name=gname,
+                message_id=(mid + ":bot") if mid else "",
+                ts=time.time(),
+                qq_id=str(event.get_self_id() or "bot"),
+                nickname="阿凌",
+                card="阿凌",
+                role="bot",
+                text=text.replace("\n", " ")[:600],
+                at_bot=False,
+                max_rows=int(self.cfg.get("group_archive_max_rows", 20000) or 0),
+            )
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"[aling-memory] 机器人回复存档失败：{e}")
 
     def _strip_qq_from_reply(self, resp: LLMResponse, event: AstrMessageEvent) -> None:
         text = resp.completion_text or ""
@@ -512,9 +791,15 @@ class AlingMemoryPlugin(Star):
             lines.append(f"本会话摘要：{'有' if summary else '无'}（覆盖 {covered} 轮）")
             lines.append(f"当前 QQ 的长期条目：{self.store.count_facts(qq)} 条")
             lines.append(
+                f"群存档：本会话 {self.store.count_group_messages(umo)} 条，"
+                f"全库 {self.store.count_group_messages()} 条"
+            )
+            lines.append(
                 f"配置：max_turns={self.cfg['short_term_max_turns']} "
                 f"mid={self.cfg['mid_term_enable']} long={self.cfg['long_term_enable']} "
-                f"scope={self.cfg['long_term_scope']}"
+                f"scope={self.cfg['long_term_scope']} "
+                f"archive={self.cfg.get('group_archive_enable', True)} "
+                f"recall={self.cfg.get('recall_enable', True)}"
             )
         elif sub == "facts":
             target = args[2] if len(args) > 2 else qq
@@ -533,6 +818,25 @@ class AlingMemoryPlugin(Star):
             target = args[2] if len(args) > 2 else qq
             n = self.store.clear_user(target)
             lines.append(f"已删除 {target} 的 {n} 条长期条目")
+        elif sub == "log" and len(args) > 2:
+            # /mem log 串串 —— 管理员手动回看：按关键词翻群存档
+            kw = " ".join(args[2:])
+            rows = self.store.search_group_messages(umo, kw, limit=10)
+            lines.append(f"「{kw}」相关记录（{len(rows)} 条）：")
+            for r in rows:
+                t = time.strftime("%m-%d %H:%M", time.localtime(float(r["ts"])))
+                who = str(r["card"] or r["nickname"] or r["qq_id"])
+                lines.append(f"[{t}] {who}: {str(r['text'])[:80]}")
+        elif sub == "recent":
+            rows = self.store.recent_group_messages(umo, limit=10)
+            lines.append(f"本群最近存档（{len(rows)} 条）：")
+            for r in rows:
+                t = time.strftime("%m-%d %H:%M", time.localtime(float(r["ts"])))
+                who = str(r["card"] or r["nickname"] or r["qq_id"])
+                lines.append(f"[{t}] {who}: {str(r['text'])[:80]}")
         else:
-            lines.append("用法：/mem status | facts [QQ号] | summary | fact <文本> | forget [QQ号]")
+            lines.append(
+                "用法：/mem status | facts [QQ号] | summary | fact <文本> | forget [QQ号] "
+                "| recent | log <关键词>"
+            )
         yield event.plain_result("\n".join(lines))

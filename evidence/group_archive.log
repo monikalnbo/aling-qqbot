@@ -1,0 +1,75 @@
+# 群聊全量入库 + 按需回看 · 真实验收  2026-11-11 22:51:54 CST
+# url=ws://127.0.0.1:6199/ws  db=astrbot/data/astrbot/plugin_data/astrbot_plugin_aling_memory/memory.db
+# 身份：小胖=222333 阿哲=333444 机器人=10000（这些数字都不许出现在回复里）
+
+# 测试群号（mock）：880716
+
+## 1. 群聊（全部不 @ 机器人）
+[群友] 小胖: 今晚想吃串串，牛肉丸必须多放   -> 回复 0 条
+[群友] 阿哲: 串串吃腻了，我想去吃烤肉   -> 回复 0 条
+[群友] 小胖: 楼下那家串串排队都排到四十号了   -> 回复 0 条
+[群友] 阿哲: 那改天吧，烤肉店我可以订位   -> 回复 0 条
+[群友] 小胖: 行，那就周六中午十二点烤肉店见   -> 回复 0 条
+
+### 不 @ 机器人时它不插话  => PASS   replies=0
+
+## 2. 抽查本地数据库：未 @ 的消息是否都记下了
+group_messages 里该群共 5 条：
+  #12 ts=22:52:02 role=user at_bot=0 qq=222333 card='小胖' text='今晚想吃串串，牛肉丸必须多放'
+  #13 ts=22:52:18 role=user at_bot=0 qq=333444 card='阿哲' text='串串吃腻了，我想去吃烤肉'
+  #14 ts=22:52:34 role=user at_bot=0 qq=222333 card='小胖' text='楼下那家串串排队都排到四十号了'
+  #15 ts=22:52:50 role=user at_bot=0 qq=333444 card='阿哲' text='那改天吧，烤肉店我可以订位'
+  #16 ts=22:53:06 role=user at_bot=0 qq=222333 card='小胖' text='行，那就周六中午十二点烤肉店见'
+
+### 5 条没 @ 的消息全部入库  => PASS   missing=[]
+### 入库记录 at_bot=0（确实是没 @ 的）  => PASS   
+### 入库带昵称/群名片与发送者 QQ  => PASS   
+
+## 3. 过一会儿 @ 它：回看刚才群里说了什么
+[阿凌] *打个哈欠，把手机往脸前凑*
+啊……刚才啊，二十二点五十二分的时候小胖说想吃串串，牛肉丸要多放。
+然后你——阿哲你自己说的，串串吃腻了想吃烤肉。杂鱼哥哥记性真差。
+后来小胖说楼下那家排队排到四十号了，你就说改天、你能订烤肉店的位。二十二点五十三分他定了周六中午十二点烤肉店见。
+……行了吧，还问。
+[判定] 提到小胖=True 提到阿哲=True 说到串串/烤肉=True 无数字ID=True
+
+### 回看「刚才谁说了什么」：答出人名 + 内容 + 只念昵称  => PASS   
+[阿凌] *揉揉眼睛*
+阿哲啊。二十二点五十二分他自己说的，串串吃腻了想吃烤肉。
+杂口杂口，你们一个两个问一样的问题，是不是故意的。
+
+### 回看「谁说想吃烤肉」：点名阿哲、不念数字  => PASS   latency=3.0s
+## 4. 日常请求（不该触发检索，也不该变慢）
+[阿凌] *从被子里探出半个头*
+在在在，别喊。
+累就早点睡啊……不过你周六还约了烤肉呢，别到时候没力气吃。
+[耗时] 首条回复 2.8s（回看那轮 4.2s / 3.0s 仅供参考）
+
+### 日常 @ 正常回复  => PASS   latency=2.8s
+### 日常回复里没有数字 ID  => PASS   
+## 5. 插件日志：回看只在被问到时发生
+recall 相关日志 3 行：
+  gin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:160]: [aling-memory] recall umo=napcat:GroupMessage:880716 keyword='什么？ 想吃什么 |broad' hits=6 chars=214
+  bot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:160]: [aling-memory] recall umo=napcat:GroupMessage:880716 keyword='想吃烤肉 来着？' hits=7 chars=354
+  54.190] [astrbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:160]: [aling-memory] recall-skip umo=napcat:GroupMessage:880716 reason=no-trigger
+
+短期上下文日志（最近 3 条）：
+  strbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:160]: [aling-memory] short-term umo=napcat:GroupMessage:880716 rounds=0/12 contexts=0 (未封顶)
+  strbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:160]: [aling-memory] short-term umo=napcat:GroupMessage:880716 rounds=3/12 contexts=6 (未封顶)
+  trbot_plugin_aling_memory] [INFO] [astrbot_plugin_aling_memory.main:160]: [aling-memory] short-term umo=napcat:GroupMessage:880716 rounds=6/12 contexts=12 (未封顶)
+
+### 日常请求走了 recall-skip（没查库）  => PASS   skip=1
+### 回看请求命中存档（hits>0）  => PASS   hit=2
+## 汇总
+- PASS  不 @ 机器人时它不插话
+- PASS  5 条没 @ 的消息全部入库
+- PASS  入库记录 at_bot=0（确实是没 @ 的）
+- PASS  入库带昵称/群名片与发送者 QQ
+- PASS  回看「刚才谁说了什么」：答出人名 + 内容 + 只念昵称
+- PASS  回看「谁说想吃烤肉」：点名阿哲、不念数字
+- PASS  日常 @ 正常回复
+- PASS  日常回复里没有数字 ID
+- PASS  日常请求走了 recall-skip（没查库）
+- PASS  回看请求命中存档（hits>0）
+
+ALL PASS
