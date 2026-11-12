@@ -6,7 +6,7 @@
 - /mem 插件指令里跨用户读写（facts/forget 指定别人的 QQ）是否越权
 
 用法：
-    python3 scripts/verify_admin_matrix.py
+    PYTHONPATH=/tmp/pydebs2:/tmp/pydebs python3 scripts/verify_admin_matrix.py
 """
 
 from __future__ import annotations

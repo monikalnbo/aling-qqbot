@@ -2,6 +2,22 @@
 
 一个黑发红瞳、起床困难、嘴硬心软的雌小鬼兄控少女。私聊直接聊天，群里 @ 她才会理你，回复由 **DeepSeek 官方 API（deepseek-chat）** 生成，带多轮上下文记忆，人设提示词可随时改。
 
+## 📌 本次更新（2026-11-12）：默认语音 + 一句一条 + 换音色
+
+这一版把阿凌从「文字回复」升级成「开口说话」，而且三件事都做成默认、不用教：
+
+| 改动 | 怎么用 |
+| --- | --- |
+| **默认就是语音** | 不发任何口令，机器人直接发语音；重启也不掉（状态存在插件自己的 `state.json`）。想临时看文字：管理员发「**文字模式**」，想切回来发「**语音模式**」，随时发「**语音状态**」查当前模式。 |
+| **一句一条语音** | 复用 AstrBot 原有的分段回复规则拆句，**每一句各自合成一条语音**，按原顺序连发，条间沿用 0.5~1.2 秒随机间隔。`*动作描写*`、`（叹气）` 这类不念：整段只有动作就不发，动作+台词同段只念台词。 |
+| **换音色一条命令** | 默认音色 `longanxiaoxin`（龙安小昕，22 岁活泼元气）。想换：`python3 scripts/set_voice.py longanhuan_v3.6`，脚本会改配置并自动重启；不带参数则列出全部 12 个可选音色。想听小样：`evidence/voice_pick/*.mp3`（同一句话、同样音量 100）。 |
+
+实现要点：插件 `plugins/astrbot_plugin_aling_voice/` 在消息发出前把每段文字换成 QQ 语音组件，AstrBot 后端本来就会把多个语音逐条发送并按配置随机间隔，所以顺序和节奏直接复用原链路，没有另造规则。合成失败、超时或超长时会**退回发文字**，不会吞消息。
+
+细节与实测：`docs/运行状态.md` §4.11、`docs/音色清单.md`、`docs/交付报告.md` §九/§十。
+
+---
+
 ## ⚠️ 先看这里：技术栈已冻结
 
 交付主线是 **NapCat + AstrBot + DeepSeek**，完整步骤见 **[`docs/上手说明.md`](docs/上手说明.md)**：
@@ -17,11 +33,13 @@ QQ 小号 ──► NapCat（协议端）──► AstrBot（机器人框架）�
 | `astrbot/compose.yml` | 一键起 NapCat + AstrBot 两个容器 |
 | `astrbot/.env.example` | 只需填 `DEEPSEEK_API_KEY` |
 | `astrbot/persona_aling.txt` | 当前人格「阿凌」，复制到 AstrBot WebUI 的「人格」里（旧「大肥鱼」人格备份在 `backup/`） |
+| `plugins/astrbot_plugin_aling_voice/` | 语音回复插件 **1.2.1**：把文字回复换成 QQ 语音（**默认开启、重启保持**，按 AstrBot 原有分段规则一句一条发出；管理员可用「文字模式」临时切回文字；走百炼 SpeechSynthesizer，默认音色 longanxiaoxin（龙安小昕）、volume=100，改音色用 `scripts/set_voice.py`，见 `docs/运行状态.md` §4.11 与 `docs/音色清单.md`） |
 | `plugins/astrbot_plugin_aling_memory/` | 记忆插件 **1.2.0**：短期 12 轮 + 6000 字封顶、中期摘要、长期事实、群聊存档与按需回看；每轮上下文比 1.1.0 少 42%~55%（见 `docs/运行状态.md` §4.9） |
 | `docs/上手说明.md` | **中文完整上手说明**（扫码、对接、配 Provider、排错） |
 | `docs/实测记录.md` 第 0 节 | 这条链路的实测证据与踩坑 |
 | `docs/交付报告.md` | 结论、证据摘要、未完成项（一页看完） |
 | `docs/运行状态.md` | **实机运行状态**：容器/端口/token/密码、二维码刷新命令、待办与限制 |
+| `scripts/qr_portal_server.py` | **扫码登录实时看板**：浏览器开着页面，二维码自动换新、登录成功变大字提示（见 `docs/上手说明.md` §12.7） |
 
 > 栈已经在跑（`astrbot/` 下 `docker compose ps` 可见 `napcat`、`astrbot`），扫码和换 Key 的具体操作见 [`docs/运行状态.md`](docs/运行状态.md)。
 

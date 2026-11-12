@@ -1,0 +1,11 @@
+语音模式端到端（假 NapCat，真实 TTS，未向真实 QQ 发送）
+时间：2026-11-12 09:13:37
+
+§1 /语音模式 → [at:<管理员QQ号>] 
+语音模式开了，接下来我用嘴说——别嫌吵。
+§2 第1条 action=send_group_msg 内容='[record 577673B]' 耗时=6.8s
+§3 /文字模式 → [at:<管理员QQ号>] 
+切回文字了，省得你听不清。
+§2 落盘 evidence/voice_e2e/voice_1_0.wav 433248 字节 probe=pcm_s16le,384000
+9.024000 mean_volume: -13.5 dB | max_volume: -0.4 dB
+RESULT PASS

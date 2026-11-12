@@ -4,7 +4,7 @@
 所有 send_* 调用的内容与到达时间，最后按「第 1 条 / 第 2 条 …」打印。
 
 用法：
-    python3 scripts/capture_send.py \
+    PYTHONPATH=/tmp/pydebs2:/tmp/pydebs python3 scripts/capture_send.py \
         --text "今天好困啊" [--private|--group] [--wait 60]
 
 退出码：0 = 至少收到 1 条发送；2 = 一条都没有（或连接失败）。

@@ -1,0 +1,13 @@
+看板状态判定验证（用假状态覆盖分支，未动真实链路）
+时间：2026-11-12 08:27:29
+
+{"ok": true, "phase": "waiting", "label": "等待扫码", "is_login": false, "accepted": false, "uin": "", "qr_url": "https://txz.qq.com/p?k=AAAA&f=1600001615", "age": 0, "ttl": 120, "remain": 120, "error": "", "checked_at": "2026-11-12 08:27:29"}
+{"ok": true, "phase": "waiting", "label": "等待扫码", "is_login": false, "accepted": false, "uin": "", "qr_url": "https://txz.qq.com/p?k=AAAA&f=1600001615", "age": 45, "ttl": 120, "remain": 75, "error": "", "checked_at": "2026-11-12 08:27:29"}
+{"ok": true, "phase": "refreshing", "label": "这张码已到期，正在换新的…", "is_login": false, "accepted": false, "uin": "", "qr_url": "https://txz.qq.com/p?k=AAAA&f=1600001615", "age": 130, "ttl": 120, "remain": 0, "error": "", "checked_at": "2026-11-12 08:27:29"}
+{"ok": true, "phase": "waiting", "label": "等待扫码", "is_login": false, "accepted": false, "uin": "", "qr_url": "https://txz.qq.com/p?k=BBBB&f=1600001615", "age": 0, "ttl": 120, "remain": 120, "error": "", "checked_at": "2026-11-12 08:27:29"}
+{"ok": true, "phase": "pending_confirm", "label": "已扫码，请在手机上点「确认登录」", "is_login": false, "accepted": true, "uin": "", "qr_url": "https://txz.qq.com/p?k=BBBB&f=1600001615", "age": 0, "ttl": 120, "remain": 120, "error": "", "checked_at": "2026-11-12 08:27:29"}
+{"ok": true, "phase": "logged_in", "label": "已登录成功，可以关掉这个页面了", "is_login": true, "accepted": false, "uin": "10001", "qr_url": "", "age": 0, "ttl": 120, "remain": 0, "error": "", "checked_at": "2026-11-12 08:27:29"}
+{"ok": true, "phase": "refreshing", "label": "换码中…马上出新的", "is_login": false, "accepted": false, "uin": "", "qr_url": "", "age": 0, "ttl": 120, "remain": 0, "error": "", "checked_at": "2026-11-12 08:27:29"}
+{"ok": false, "phase": "unknown", "label": "暂时读不到登录状态，页面会自动重试", "is_login": false, "accepted": false, "uin": "", "qr_url": "", "age": 0, "ttl": 120, "remain": 0, "error": "'NoneType' object has no attribute 'get'", "checked_at": "2026-11-12 08:27:29"}
+
+RESULT PASS cases=8 failed=0

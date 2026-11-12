@@ -1,0 +1,68 @@
+{
+    "enable_on_start": {
+        "description": "启动时就开启语音模式",
+        "type": "bool",
+        "default": true,
+        "hint": "默认开启，重启后保持语音模式。想临时看文字发「文字模式」，「语音模式」再切回来"
+    },
+    "api_base": {
+        "description": "语音接口域名",
+        "type": "string",
+        "default": "https://maas.qianwenaiapi.com",
+        "hint": "插件会向 <api_base>/api/v1/services/audio/tts/SpeechSynthesizer 发请求；填到 /api/v1 结尾也能自动识别"
+    },
+    "api_key": {
+        "description": "语音接口密钥",
+        "type": "string",
+        "default": "",
+        "hint": "只放在这个配置文件里（权限 600），不要写进代码或公开文档"
+    },
+    "model": {
+        "description": "语音模型",
+        "type": "string",
+        "default": "qwen-audio-3.0-tts-flash",
+        "hint": "本服务上实测可用：qwen-audio-3.0-tts-flash。走 chat/completions 或 /audio/speech 都不通，必须走 SpeechSynthesizer"
+    },
+    "voice": {
+        "description": "音色",
+        "type": "string",
+        "default": "longanxiaoxin",
+        "hint": "默认龙安小昕（longanxiaoxin，22 岁亲切活泼音，元气少女）。其他少女感候选：longanhuan_v3.6 龙安欢（明亮俏皮）、longpaopao_v3.6 龙泡泡（软糯儿童音）；旧默认 longanlingxi 龙安灵希（偏成熟）。试听见 evidence/voice_pick/。音色必须和模型配套，填错会报 Engine error [411]"
+    },
+    "volume": {
+        "description": "音量（接口原生参数）",
+        "type": "int",
+        "default": 100,
+        "hint": "0~100，服务端直接放大，不是事后改文件。默认 100 已经最大；嫌吵就调到 85 左右"
+    },
+    "sample_rate": {
+        "description": "采样率",
+        "type": "int",
+        "default": 24000,
+        "hint": "可选 8000/12000/16000/22050/24000/44100/48000；QQ 语音 24000 足够"
+    },
+    "max_chars": {
+        "description": "单条语音最多合成多少字",
+        "type": "int",
+        "default": 120,
+        "hint": "按分段规则拆开后，某段超过这个字数会再按句末标点切成几条，不是只念前面一段"
+    },
+    "max_concurrency": {
+        "description": "同时合成的段数上限",
+        "type": "int",
+        "default": 3,
+        "hint": "一条回复拆成多段时并发合成以缩短等待；设为 1 则逐条合成"
+    },
+    "dual_output": {
+        "description": "语音之外再发一遍文字",
+        "type": "bool",
+        "default": false,
+        "hint": "默认只发语音；打开后语音和文字都发"
+    },
+    "timeout": {
+        "description": "合成超时（秒）",
+        "type": "int",
+        "default": 60,
+        "hint": "超过这个时间还没合成完就放弃，改发文字"
+    }
+}

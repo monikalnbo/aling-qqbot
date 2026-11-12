@@ -1,0 +1,10 @@
+name: astrbot_plugin_aling_voice
+display_name: 阿凌 · 语音回复
+author: aling
+version: 1.2.1
+desc: 让阿凌把文字回复转成 QQ 语音消息发出来。默认开启：按 AstrBot 原有的分段回复规则拆句，每段各合成一条 QQ 语音、按顺序连续发出，条间沿用原有随机间隔。用阿里云百炼「非实时语音合成」接口（qwen-audio-3.0-tts-flash，音色 longanxiaoxin，volume=100）直接生成 mp3；管理员可发「文字模式」临时切回文字，再发「语音模式」切回来。
+short_desc: 文字回复 → 多条 QQ 语音（默认开，口令可切文字）
+repo: https://github.com/monikalnbo/aling-qqbot
+astrbot_version: ">=4.29.0,<5"
+support_platforms:
+  - aiocqhttp

@@ -1,0 +1,22 @@
+qwen-audio-3.0-tts-flash 系统音色实测（每个音色真调一次，volume=100，24kHz wav）
+voice	结果	字节	时长s	平均音量	峰值音量
+longanfengyue	OK	73004	1.520000	-13.8 dB	0.0 dB
+longanyuanfei	OK	88364	1.840000	-12.9 dB	0.0 dB
+longanlingxi	OK	80684	1.680000	-12.0 dB	0.0 dB
+longanxiaoxin	OK	73004	1.520000	-14.3 dB	-0.0 dB
+longanhuan_v3.6	OK	76844	1.600000	-13.4 dB	0.0 dB
+longjielidou_v3.6	OK	96044	2.000000	-14.3 dB	0.0 dB
+longpaopao_v3.6	OK	92204	1.920000	-12.7 dB	0.0 dB
+longhuohuo_v3.6	OK	84524	1.760000	-11.7 dB	0.0 dB
+longchuanshu_v3.6	OK	80684	1.680000	-16.2 dB	-0.2 dB
+loongmary	OK	103724	2.160000	-12.7 dB	0.0 dB
+loongeva_v3.6	OK	69164	1.440000	-12.4 dB	0.0 dB
+loongjohn	OK	99884	2.080000	-13.9 dB	0.0 dB
+
+反例（属于其他模型 / 不存在，预期失败）：
+longanlingxin	FAIL	HTTP 400 {"request_id":"50dc7b54-b69e-9199-9a76-fa79b771e4b3","code":"InvalidParameter","message":"[cosyvoice:]Engine error [411]: TTS speak operation failed"}
+longanhuan_v3.1	FAIL	HTTP 400 {"request_id":"102a2e03-3cc3-92a3-a1b7-f9d8156a307d","code":"InvalidParameter","message":"[cosyvoice:]Engine error [411]: TTS speak operation failed"}
+Serena	FAIL	HTTP 400 {"request_id":"6662af62-1387-94af-976c-d578c6186425","code":"InvalidParameter","message":"[cosyvoice:]Engine error [411]: TTS speak operation failed"}
+Cherry	FAIL	HTTP 400 {"request_id":"ea7dd7a7-c784-94ad-9f35-df98ea61149b","code":"InvalidParameter","message":"[cosyvoice:]Engine error [411]: TTS speak operation failed"}
+
+可用 12/12

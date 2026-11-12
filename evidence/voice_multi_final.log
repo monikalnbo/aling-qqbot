@@ -1,0 +1,47 @@
+语音「默认开启 + 一句一条」最终检查（2026-11-12 09:24）
+=====================================================
+
+1) 插件版本与加载
+   $ docker logs astrbot | grep aling_voice
+   Plugin astrbot_plugin_aling_voice (1.2.0) by aling: …默认开启…每段各合成一条 QQ 语音…
+   09:24:11 重启后：插件 1.2.0 已加载；aiocqhttp(OneBot v11) 适配器已连接。
+
+2) 默认即语音、重启后保持
+   重启前 state.json: {"voice_on": true, ...}
+   重启后（未发任何口令，假 NapCat 发 /语音状态）：
+     send_group_msg 文字「现在是【语音】模式。管理员发「文字模式」/「语音模式」切换。」
+   → 重启后仍为语音模式，无需任何口令。
+
+3) 一条回复拆多条（真实 DeepSeek + 真实 TTS，假 NapCat，未向真实 QQ 发送）
+   evidence/voice_multi.log §1：
+     [record 64649B]  t+0.00s
+     [record 295049B] t+0.82s
+     [record 152201B] t+1.97s
+   → 3 条语音、0 条文字；条间到达间隔 0.82s / 1.14s（配置区间 0.5~1.2s）
+   落盘：evidence/voice_multi/voice_1.wav 1.008s  mean -15.1 dB  max -2.4 dB
+         evidence/voice_multi/voice_2.wav 4.608s  mean -12.9 dB  max -0.4 dB
+         evidence/voice_multi/voice_3.wav 2.376s  mean -12.9 dB  max -0.4 dB
+   插件日志：voice-part 1/3 '今天？' / 2/3 '通宵到四点…' / 3/3 '你也别老熬夜啊…'
+            voice-batch n=3 voice=3 text=0 skipped=0 voice_id=longanlingxi volume=100
+
+4) 动作描写处理
+   09:21:56 模型回复首段为「（清了清嗓子，故意压低声音，有点得意）」：
+     日志 voice-skip 纯动作/空段 → 该段不发出
+     其余两句正常变语音（voice-part 1/2、2/2）
+
+5) 口令双向
+   /语音状态 → 现在是【语音】模式
+   /文字模式  → 确认语为文字；随后普通聊天 4 条全为文字（无 record）
+   /语音模式  → 确认语为文字；随后普通聊天 2 条全为语音
+
+6) 不影响其他功能
+   文字聊天回归：上述 §5 文字模式下 4 条纯文字正常
+   扫码看板：https://<你的域名>/qqqr-<token>/ → HTTP 200；systemctl is-active qqqr-portal → active
+   近 15 分钟日志 ERROR/Traceback 计数：0
+
+7) 配置
+   astrbot/data/astrbot/config/astrbot_plugin_aling_voice_config.json（600）
+     enable_on_start=true, voice=longanlingxi, volume=100, max_chars=120, max_concurrency=3
+   astrbot/data/astrbot/plugin_data/astrbot_plugin_aling_voice/state.json
+     {"voice_on": true, "updated_at": "2026-11-12 09:21:52"}
+   cmd_config.json 未改动（分段规则维持原值）

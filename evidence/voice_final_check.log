@@ -1,0 +1,33 @@
+语音功能最终健康检查（2026-11-12 09:14）
+=====================================================
+
+1) 机器人进程
+   $ docker ps → astrbot Up
+   09:12:37 日志：Plugin astrbot_plugin_aling_voice (1.1.0) by aling: …（新描述）
+   09:12:41 日志：aiocqhttp(OneBot v11) 适配器已连接。
+
+2) 插件新代码单元测试（机器人环境内真调接口）
+   $ docker exec -w /AstrBot astrbot python3 /AstrBot/data/scripts/test_voice_plugin.py
+   model=qwen-audio-3.0-tts-flash voice=longanlingxi volume=100
+   接口调用 86011 字节 格式=.mp3 耗时 1.7s
+   音量检测 mean_volume: -12.0 dB | max_volume: -0.4 dB   ffprobe 4.296s
+   RESULT PASS
+
+3) 端到端（假 NapCat，真实 TTS，未向真实 QQ 发送）
+   /语音模式 → 文字确认 → 普通聊天 → [record 577673B] → /文字模式
+   抓到的音频真身：433248 字节 wav，9.02s，平均 -13.5 dB / 峰值 -0.4 dB
+   RESULT PASS（evidence/voice_e2e.log）
+
+4) 文字聊天回归（同一时间、语音关闭状态）
+   $ python3 scripts/capture_send.py --text "今天吃什么好"
+   9 条 send_private_msg，全部为 text，含 *动作* 分段，最后一条 10.51s 到达；没有被切成 record。
+
+5) 状态复位
+   plugin_data/astrbot_plugin_aling_voice/state.json = {"voice_on": false, "updated_at": "2026-11-12 09:13:33"}
+
+6) 扫码看板
+   https://<你的域名>/qqqr-<token>/ → HTTP 200
+   systemctl is-active qqqr-portal → active
+
+7) 错误日志
+   最近 3 分钟内 ERROR/Traceback 计数：0

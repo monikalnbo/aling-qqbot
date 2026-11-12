@@ -1,0 +1,21 @@
+语音多条 + 默认开启 端到端验证（假 NapCat，真实 TTS，未向真实 QQ 发送）
+时间：2026-11-12 09:36:15
+
+§1 重启后未发任何口令，直接普通聊天：
+  第1条 t+ 0.00s action=send_group_msg '[record 229001B]'
+  第2条 t+ 1.22s action=send_group_msg '[record 156809B]'
+  第3条 t+ 1.95s action=send_group_msg '[record 110729B]'
+  语音条数=3 纯文字条数=0
+  条间到达间隔（秒）= [1.22, 0.73]
+  语音1: 171744 字节 .wav probe=pcm_s16le,384000 3.576000 mean=-15.1 dB | max_volume: -0.4 dB
+  语音2: 117600 字节 .wav probe=pcm_s16le,384000 2.448000 mean=-15.7 dB | max_volume: -0.4 dB
+  语音3: 83040 字节 .wav probe=pcm_s16le,384000 1.728000 mean=-13.4 dB | max_volume: -0.4 dB
+§2 /语音状态 → [at:<管理员QQ号>] 
+现在是【语音】模式。管理员发「文字模式」/「语音模式」切换。
+§3 /文字模式 → [at:<管理员QQ号>] 
+切回文字了，省得你听不清。
+§3 文字模式下普通聊天：4 条，全为文字=True
+§4 /语音模式 → [at:<管理员QQ号>] 
+语音模式开了，接下来我用嘴说——别嫌吵。
+§4 切回语音后普通聊天：2 条，其中语音 2 条
+RESULT PASS

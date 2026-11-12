@@ -17,6 +17,7 @@ astrbot/data/astrbot/*
 !astrbot/data/astrbot/config/
 astrbot/data/astrbot/config/*
 !astrbot/data/astrbot/config/astrbot_plugin_aling_memory_config.json
+!astrbot/data/astrbot/config/astrbot_plugin_aling_voice_config.example.json
 
 # ===== NapCat 运行时：QQ 登录态、协议配置、二维码 =====
 qq/
@@ -35,7 +36,7 @@ dist/
 build/
 
 # ===== NoneBot 运行时 =====
-data/
+/data/
 logs/
 cache/
 .nonebot/
@@ -44,3 +45,6 @@ cache/
 backup/
 .vscode/
 .idea/
+
+# ===== 示例配置（不含真实凭据，允许提交）=====
+!astrbot/data/astrbot/config/astrbot_plugin_aling_voice_config.example.json

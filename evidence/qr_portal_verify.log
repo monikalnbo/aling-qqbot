@@ -1,0 +1,19 @@
+QQ 扫码看板验证记录  2026-11-12 08:30:22
+地址：https://<你的域名>/qqqr-<访问 token>/
+
+1) 页面可打开
+   HTTPS GET 页面 -> 200 text/html; charset=utf-8 5123 bytes
+2) 状态接口
+{"ok": true, "phase": "waiting", "label": "等待扫码", "is_login": false, "accepted": false, "uin": "", "qr_url": "https://txz.qq.com/p?k=MnymSjqmMTCv3taQoeUPmjK3410vh5zC&f=1600001615", "age": 9, "ttl": 120, "remain": 111, "error": "", "checked_at": "2026-11-12 08:30:22"}
+3) 图片接口（防缓存头）
+HTTP/1.1 200 OK
+Content-Type: image/png
+Content-Length: 2348
+Cache-Control: no-store
+Cache-Control: no-store
+4) 无 token / 错误 token 均 404
+   /qqqr-xxx/state -> 404
+   /state        -> 404
+5) 常驻服务
+active
+enabled

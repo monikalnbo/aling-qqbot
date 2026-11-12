@@ -9,16 +9,16 @@
 5. cmd_status：/mem status 返回插件状态
 
 用法：
-    python3 scripts/verify_memory.py \
+    PYTHONPATH=/tmp/pydebs2:/tmp/pydebs python3 scripts/verify_memory.py \
         --url ws://127.0.0.1:6199/ws --out evidence/memory_verify.log
 """
 
 from __future__ import annotations
 
 import argparse
-import os
 import asyncio
 import json
+import os
 import sys
 import time
 

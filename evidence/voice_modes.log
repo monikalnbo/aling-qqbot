@@ -1,0 +1,36 @@
+语音模式开关与发送形态验证（模拟 NapCat 连接，真实 DeepSeek + 真实语音接口；未向真实 QQ 发送）
+时间：2026-11-12 08:53:12
+
+== 1. 默认状态
+--- captured 1 send_* frame(s) ---
+[1] t=  1.12s (+1.12s) action=send_private_msg target=<管理员QQ号> text='现在是【文字】模式。管理员发「语音模式」/「文字模式」切换。'
+total wall time to last send: 1.12s
+
+== 2. 非管理员试图开启
+--- captured 1 send_* frame(s) ---
+[1] t=  1.09s (+1.09s) action=send_private_msg target=123456 text='这个开关只有管理员能碰，杂鱼就别乱按了。'
+total wall time to last send: 1.09s
+
+== 3. 管理员开启（确认语用文字）
+--- captured 1 send_* frame(s) ---
+[1] t=  1.12s (+1.12s) action=send_private_msg target=<管理员QQ号> text='语音模式开了，接下来我用嘴说——别嫌吵。'
+total wall time to last send: 1.12s
+
+== 4. 语音模式下的普通回复（应为 [record]）
+sent: private 说句话听听
+--- captured 1 send_* frame(s) ---
+[1] t=  4.48s (+4.48s) action=send_private_msg target=<管理员QQ号> text='[record]'
+total wall time to last send: 4.48s
+
+== 5. 管理员关闭
+--- captured 1 send_* frame(s) ---
+[1] t=  1.09s (+1.09s) action=send_private_msg target=<管理员QQ号> text='切回文字了，省得你听不清。'
+total wall time to last send: 1.09s
+
+== 6. 文字模式下的普通回复（应为文字）
+[1] t=  3.35s (+3.35s) action=send_private_msg target=<管理员QQ号> text='*把手机拿到枕头边，眯着眼*'
+[2] t=  4.35s (+1.00s) action=send_private_msg target=<管理员QQ号> text='在。第三遍了哦。'
+[3] t=  5.30s (+0.95s) action=send_private_msg target=<管理员QQ号> text='*戳了下屏幕*'
+[4] t=  6.25s (+0.95s) action=send_private_msg target=<管理员QQ号> text='你是卡住了还是在复读？'
+[5] t=  7.17s (+0.92s) action=send_private_msg target=<管理员QQ号> text='杂口杂口……到底什么事。'
+total wall time to last send: 7.17s
