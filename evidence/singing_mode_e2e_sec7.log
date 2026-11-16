@@ -1,0 +1,16 @@
+唱歌模式端到端（假 NapCat，真实 TTS / 真实对话模型，未向真实 QQ 发送）
+时间：2026-11-16 19:55:35
+
+== §7 正例组：3 条点歌说法（必须收到长歌声）==
+[11_pos_song] 问：'唱首歌' 等待=128.0s 收到 2 条：[record 5763209B] | [record 5763209B]
+    ↳ evidence/singing_mode/11_pos_song_1_0.wav 4322400B duration=45.02s 音符=37 长音段=45(18.89s) 音域=34.0半音
+    ↳ evidence/singing_mode/11_pos_song_2_0.wav 4322400B duration=45.02s 音符=32 长音段=61(29.01s) 音域=34.6半音
+   ✓ 11_pos_song 是唱歌：90.0s 长音 47.9s
+[12_pos_yishou] 问：'来一首吧' 等待=108.7s 收到 1 条：[record 5766281B]
+    ↳ evidence/singing_mode/12_pos_yishou_3_0.wav 4324704B duration=45.05s 音符=35 长音段=56(29.56s) 音域=30.8半音
+   ✓ 12_pos_yishou 是唱歌：45.0s 长音 29.6s
+[13_pos_ba] 问：'给我唱一段' 等待=127.4s 收到 2 条：[record 5763209B] | [record 5763209B]
+    ↳ evidence/singing_mode/13_pos_ba_4_0.wav 4322400B duration=45.02s 音符=32 长音段=41(30.14s) 音域=29.1半音
+    ↳ evidence/singing_mode/13_pos_ba_5_0.wav 4322400B duration=45.02s 音符=36 长音段=49(28.78s) 音域=31.1半音
+   ✓ 13_pos_ba 是唱歌：90.0s 长音 58.9s
+RESULT PASS

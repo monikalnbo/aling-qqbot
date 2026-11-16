@@ -1,0 +1,11 @@
+唱歌模式端到端（假 NapCat，真实 TTS / 真实对话模型，未向真实 QQ 发送）
+时间：2026-11-16 19:47:42
+
+== §5 普通聊天复测（速度不得退化）==
+[07_chat_again] 问：'晚上吃点啥好呢' 等待=11.5s 收到 4 条：[record 239753B] | [record 608393B] | [record 341129B] | [record 224393B]
+    ↳ evidence/singing_mode/07_chat_again_1_0.wav 179808B duration=3.74s 音符=16 长音段=4(1.37s) 音域=11.9半音
+    ↳ evidence/singing_mode/07_chat_again_2_0.wav 456288B duration=9.5s 音符=27 长音段=1(0.33s) 音域=14.7半音
+    ↳ evidence/singing_mode/07_chat_again_3_0.wav 255840B duration=5.33s 音符=21 长音段=1(0.3s) 音域=11.6半音
+    ↳ evidence/singing_mode/07_chat_again_4_0.wav 168288B duration=3.5s 音符=16 长音段=2(0.69s) 音域=12.4半音
+   复测耗时 14.3s，语音 4 条
+RESULT PASS

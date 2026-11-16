@@ -1,0 +1,27 @@
+唱歌模式端到端（假 NapCat，真实 TTS / 真实对话模型，未向真实 QQ 发送）
+时间：2026-11-16 20:15:29
+
+== §6 反例组：3 条非点歌说法（不得唱歌）==
+[08_neg_can] 问：'你会唱歌吗' 等待=29.4s 收到 4 条：[record 417929B] | [record 202889B] | [record 126089B] | [record 347273B]
+    ↳ evidence/singing_mode/08_neg_can_1_0.wav 313440B duration=6.53s 音符=24 长音段=3(1.06s) 音域=11.6半音
+    ↳ evidence/singing_mode/08_neg_can_2_0.wav 152160B duration=3.17s 音符=22 长音段=1(0.51s) 音域=10.9半音
+    ↳ evidence/singing_mode/08_neg_can_3_0.wav 94560B duration=1.97s 音符=15 长音段=1(0.47s) 音域=11.5半音
+    ↳ evidence/singing_mode/08_neg_can_4_0.wav 260448B duration=5.42s 音符=23 长音段=2(0.78s) 音域=18.1半音
+    ↳ 08_neg_can 第1条 duration=6.53s 长音段=3(1.06s) 音域=11.6半音
+    ↳ 08_neg_can 第2条 duration=3.17s 长音段=1(0.51s) 音域=10.9半音
+    ↳ 08_neg_can 第3条 duration=1.97s 长音段=1(0.47s) 音域=11.5半音
+    ↳ 08_neg_can 第4条 duration=5.42s 长音段=2(0.78s) 音域=18.1半音
+   ✓ 08_neg_can 普通语音（17.1s）
+[09_neg_stop] 问：'别唱了，安静会儿' 等待=23.3s 收到 1 条：[record 64649B]
+    ↳ evidence/singing_mode/09_neg_stop_5_0.wav 48480B duration=1.01s 音符=16 长音段=0(0.0s) 音域=15.3半音
+    ↳ 09_neg_stop 第1条 duration=1.01s 长音段=0(0.0s) 音域=15.3半音
+   ✓ 09_neg_stop 普通语音（1.0s）
+[10_neg_praise] 问：'他唱得真好听' 等待=26.9s 收到 3 条：[record 49289B] | [record 397961B] | [record 80009B]
+    ↳ evidence/singing_mode/10_neg_praise_6_0.wav 36960B duration=0.77s 音符=16 长音段=0(0.0s) 音域=16.8半音
+    ↳ evidence/singing_mode/10_neg_praise_7_0.wav 298464B duration=6.22s 音符=23 长音段=1(0.26s) 音域=12.6半音
+    ↳ evidence/singing_mode/10_neg_praise_8_0.wav 60000B duration=1.25s 音符=9 长音段=1(0.49s) 音域=9.5半音
+    ↳ 10_neg_praise 第1条 duration=0.77s 长音段=0(0.0s) 音域=16.8半音
+    ↳ 10_neg_praise 第2条 duration=6.22s 长音段=1(0.26s) 音域=12.6半音
+    ↳ 10_neg_praise 第3条 duration=1.25s 长音段=1(0.49s) 音域=9.5半音
+   ✓ 10_neg_praise 普通语音（8.2s）
+RESULT PASS

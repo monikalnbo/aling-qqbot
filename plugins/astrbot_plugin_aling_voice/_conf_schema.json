@@ -21,7 +21,7 @@
         "description": "语音模型",
         "type": "string",
         "default": "qwen-audio-3.0-tts-flash",
-        "hint": "本服务上实测可用：qwen-audio-3.0-tts-flash。走 chat/completions 或 /audio/speech 都不通，必须走 SpeechSynthesizer"
+        "hint": "日常聊天用的语音模型（要快）。实测 qwen-audio-3.0-tts-flash 单句约 0.8 秒出声；换成 qwen-audio-3.1-tts-next 单句要约 17 秒，所以日常聊天不要换。唱歌走单独的 sing_model。"
     },
     "voice": {
         "description": "音色",
@@ -64,5 +64,65 @@
         "type": "int",
         "default": 60,
         "hint": "超过这个时间还没合成完就放弃，改发文字"
+    },
+    "sing_enabled": {
+        "description": "开启唱歌模式",
+        "type": "bool",
+        "default": true,
+        "hint": "默认开。关了以后点歌也不会唱（只当普通聊天）。管理员可发「/唱歌 关闭」「/唱歌 开启」临时切换"
+    },
+    "sing_auto": {
+        "description": "自动识别点歌（聊天里直接说）",
+        "type": "bool",
+        "default": true,
+        "hint": "开：聊天里说「唱首歌」「来一首小星星」就会唱；关：只能用「/唱歌」指令点歌。规则见 sing.py"
+    },
+    "sing_model": {
+        "description": "唱歌模型",
+        "type": "string",
+        "default": "qwen-audio-3.1-tts-next",
+        "hint": "必须是支持 text_prompt 唱法提示的模型。实测 qwen-audio-3.1-tts-next 能唱出旋律；日常的 3.0-tts-flash 只会念歌词"
+    },
+    "sing_voice": {
+        "description": "唱歌音色（留空跟随 voice）",
+        "type": "string",
+        "default": "",
+        "hint": "留空就用上面 voice 的音色（longanxiaoxin）。实测 3.1-next 上 longanxiaoxin / longanhuan_v3.6 / longpaopao_v3.6 / longanlingxi 都能唱"
+    },
+    "sing_prompt": {
+        "description": "唱法提示（text_prompt）",
+        "type": "string",
+        "default": "请用唱歌的方式，带着旋律把这段歌词唱出来，像在唱儿歌一样，每个字拖长、有起伏地演唱",
+        "hint": "这句会随歌词一起发给唱歌模型，决定「唱」还是「念」。别删，删了模型可能退化成朗读"
+    },
+    "sing_max_chars": {
+        "description": "唱歌每段最多多少字",
+        "type": "int",
+        "default": 40,
+        "hint": "按字数和行数切成多条语音，避免一条太长在 QQ 端被截断"
+    },
+    "sing_max_segments": {
+        "description": "一首歌最多切几段",
+        "type": "int",
+        "default": 2,
+        "hint": "每段一条语音。默认 2 段：实测 3.1-next 每段大约 45 秒，2 段已能把副歌唱完；调大会更完整但也更久"
+    },
+    "sing_timeout": {
+        "description": "唱歌合成超时（秒）",
+        "type": "int",
+        "default": 150,
+        "hint": "唱歌比说话慢得多（实测单段 55~75 秒），超时设小了会白等"
+    },
+    "sing_extra_words": {
+        "description": "额外点歌关键词（可留空）",
+        "type": "list",
+        "default": [],
+        "hint": "填了以后，只要消息里出现这些词就当成点歌。比如填「来一段」「整一个」"
+    },
+    "sing_extra_regex": {
+        "description": "额外点歌正则（可留空）",
+        "type": "string",
+        "default": "",
+        "hint": "高级用法，不填就不用。语法是 Python 正则，命中的消息会被当成点歌"
     }
 }

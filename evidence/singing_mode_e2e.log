@@ -1,0 +1,76 @@
+唱歌模式端到端（假 NapCat，真实 TTS / 真实对话模型，未向真实 QQ 发送）
+时间：2026-11-16 20:31:52
+
+== §1 普通聊天（应快、短、日常音色）==
+[01_chat] 问：'喂，说句话听听' 等待=15.0s 收到 4 条：[record 44681B] | [record 920201B] | [record 371849B] | [record 275081B]
+    ↳ evidence/singing_mode/01_chat_1_0.wav 33504B duration=0.7s 音符=11 长音段=0(0.0s) 音域=9.6半音
+    ↳ evidence/singing_mode/01_chat_2_0.wav 690144B duration=14.38s 音符=25 长音段=3(0.89s) 音域=12.5半音
+    ↳ evidence/singing_mode/01_chat_3_0.wav 278880B duration=5.81s 音符=24 长音段=5(1.38s) 音域=15.4半音
+    ↳ evidence/singing_mode/01_chat_4_0.wav 206304B duration=4.3s 音符=13 长音段=2(0.72s) 音域=8.8半音
+   ✓ 普通语音：4 条共 25.2s，无长歌声
+== §2 反例：不要唱歌 ==
+[02_negative] 问：'不要唱歌，聊聊天吧' 等待=11.8s 收到 4 条：[record 193673B] | [record 628361B] | [record 413321B] | [record 233609B]
+    ↳ evidence/singing_mode/02_negative_5_0.wav 145248B duration=3.02s 音符=20 长音段=0(0.0s) 音域=19.2半音
+    ↳ evidence/singing_mode/02_negative_6_0.wav 471264B duration=9.82s 音符=24 长音段=2(0.57s) 音域=15.6半音
+    ↳ evidence/singing_mode/02_negative_7_0.wav 309984B duration=6.46s 音符=15 长音段=3(0.89s) 音域=9.7半音
+    ↳ evidence/singing_mode/02_negative_8_0.wav 175200B duration=3.65s 音符=15 长音段=1(0.31s) 音域=11.6半音
+   ✓ 只是普通语音（3.02s）
+== §3 点歌（必须长音频 + 有明显音高起伏）==
+[03_sing_xiaoxingxing] 问：'唱首小星星' 等待=93.8s 收到 1 条：[record 5763209B]
+    ↳ evidence/singing_mode/03_sing_xiaoxingxing_9_0.wav 4322400B duration=45.02s 音符=37 长音段=52(23.5s) 音域=31.1半音
+   ✓ 03_sing_xiaoxingxing 是唱歌：总时长 45.0s 长音段 52(23.5s) 音域 31.1 半音
+[04_sing_tiger] 问：'来一首两只老虎' 等待=101.1s 收到 1 条：[record 5766281B]
+    ↳ evidence/singing_mode/04_sing_tiger_10_0.wav 4324704B duration=45.05s 音符=37 长音段=44(18.79s) 音域=34.7半音
+   ✓ 04_sing_tiger 是唱歌：总时长 45.0s 长音段 44(18.8s) 音域 34.7 半音
+[05_sing_birthday] 问：'唱首生日快乐' 等待=95.2s 收到 1 条：[record 5766281B]
+    ↳ evidence/singing_mode/05_sing_birthday_11_0.wav 4324704B duration=45.05s 音符=36 长音段=62(25.85s) 音域=33.6半音
+   ✓ 05_sing_birthday 是唱歌：总时长 45.0s 长音段 62(25.9s) 音域 33.6 半音
+== §4 显式指令 /唱歌 两只老虎 ==
+[06_cmd_sing] 问：'/唱歌 两只老虎' 等待=159.0s 收到 2 条：[at:123456789] 
+行，我去准备《两只老虎》，唱完可能得等一会儿。 | [record 5763209B]
+    ↳ evidence/singing_mode/06_cmd_sing_12_0.wav 4322400B duration=45.02s 音符=36 长音段=55(31.69s) 音域=33.1半音
+   指令唱歌总时长 45.0s，长音段 55(31.7s) 音域 33.1
+   ✓ /唱歌 收到歌声
+== §7 正例组：3 条点歌说法（必须收到长歌声）==
+[11_pos_song] 问：'唱首歌' 等待=97.7s 收到 1 条：[record 5763209B]
+    ↳ evidence/singing_mode/11_pos_song_13_0.wav 4322400B duration=45.02s 音符=37 长音段=44(20.37s) 音域=28.0半音
+   ✓ 11_pos_song 是唱歌：45.0s 长音 20.4s
+[12_pos_yishou] 问：'来一首吧' 等待=99.5s 收到 1 条：[record 5763209B]
+    ↳ evidence/singing_mode/12_pos_yishou_14_0.wav 4322400B duration=45.02s 音符=35 长音段=42(18.81s) 音域=33.5半音
+   ✓ 12_pos_yishou 是唱歌：45.0s 长音 18.8s
+[13_pos_ba] 问：'给我唱一段' 等待=95.7s 收到 1 条：[record 5763209B]
+    ↳ evidence/singing_mode/13_pos_ba_15_0.wav 4322400B duration=45.02s 音符=37 长音段=29(12.32s) 音域=35.7半音
+   ✓ 13_pos_ba 是唱歌：45.0s 长音 12.3s
+== §6 反例组：3 条非点歌说法（不得唱歌）==
+[08_neg_can] 问：'你会唱歌吗' 等待=31.9s 收到 5 条：[record 402569B] | [record 1053833B] | [record 121481B] | [record 132233B] | [record 218249B]
+    ↳ evidence/singing_mode/08_neg_can_16_0.wav 301920B duration=6.29s 音符=19 长音段=2(0.55s) 音域=12.0半音
+    ↳ evidence/singing_mode/08_neg_can_17_0.wav 790368B duration=16.46s 音符=24 长音段=2(0.52s) 音域=13.2半音
+    ↳ evidence/singing_mode/08_neg_can_18_0.wav 91104B duration=1.9s 音符=20 长音段=0(0.0s) 音域=17.1半音
+    ↳ evidence/singing_mode/08_neg_can_19_0.wav 99168B duration=2.06s 音符=11 长音段=1(0.27s) 音域=9.5半音
+    ↳ evidence/singing_mode/08_neg_can_20_0.wav 163680B duration=3.41s 音符=15 长音段=3(0.87s) 音域=10.0半音
+    ↳ 08_neg_can 第1条 duration=6.29s 长音段=2(0.55s) 音域=12.0半音
+    ↳ 08_neg_can 第2条 duration=16.46s 长音段=2(0.52s) 音域=13.2半音
+    ↳ 08_neg_can 第3条 duration=1.9s 长音段=0(0.0s) 音域=17.1半音
+    ↳ 08_neg_can 第4条 duration=2.06s 长音段=1(0.27s) 音域=9.5半音
+    ↳ 08_neg_can 第5条 duration=3.41s 长音段=3(0.87s) 音域=10.0半音
+   ✓ 08_neg_can 普通语音（30.1s）
+[09_neg_stop] 问：'别唱了，安静会儿' 等待=23.4s 收到 1 条：[record 64649B]
+    ↳ evidence/singing_mode/09_neg_stop_21_0.wav 48480B duration=1.01s 音符=16 长音段=0(0.0s) 音域=15.3半音
+    ↳ 09_neg_stop 第1条 duration=1.01s 长音段=0(0.0s) 音域=15.3半音
+   ✓ 09_neg_stop 普通语音（1.0s）
+[10_neg_praise] 问：'他唱得真好听' 等待=27.1s 收到 3 条：[record 49289B] | [record 316553B] | [record 80009B]
+    ↳ evidence/singing_mode/10_neg_praise_22_0.wav 36960B duration=0.77s 音符=17 长音段=0(0.0s) 音域=18.0半音
+    ↳ evidence/singing_mode/10_neg_praise_23_0.wav 237408B duration=4.94s 音符=27 长音段=1(0.31s) 音域=16.8半音
+    ↳ evidence/singing_mode/10_neg_praise_24_0.wav 60000B duration=1.25s 音符=9 长音段=1(0.49s) 音域=9.5半音
+    ↳ 10_neg_praise 第1条 duration=0.77s 长音段=0(0.0s) 音域=18.0半音
+    ↳ 10_neg_praise 第2条 duration=4.94s 长音段=1(0.31s) 音域=16.8半音
+    ↳ 10_neg_praise 第3条 duration=1.25s 长音段=1(0.49s) 音域=9.5半音
+   ✓ 10_neg_praise 普通语音（7.0s）
+== §5 普通聊天复测（速度不得退化）==
+[07_chat_again] 问：'晚上吃点啥好呢' 等待=11.8s 收到 4 条：[record 316553B] | [record 454793B] | [record 341129B] | [record 187529B]
+    ↳ evidence/singing_mode/07_chat_again_25_0.wav 237408B duration=4.94s 音符=15 长音段=2(0.6s) 音域=7.5半音
+    ↳ evidence/singing_mode/07_chat_again_26_0.wav 341088B duration=7.1s 音符=19 长音段=1(0.28s) 音域=10.7半音
+    ↳ evidence/singing_mode/07_chat_again_27_0.wav 255840B duration=5.33s 音符=27 长音段=2(0.67s) 音域=13.4半音
+    ↳ evidence/singing_mode/07_chat_again_28_0.wav 140640B duration=2.93s 音符=22 长音段=2(0.62s) 音域=16.6半音
+   复测耗时 14.4s，语音 4 条
+RESULT PASS

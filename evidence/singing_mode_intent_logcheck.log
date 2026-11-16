@@ -1,0 +1,19 @@
+# 唱歌意图 → 实际触发 对账（来自本轮真实运行的插件日志，假 NapCat + 真实模型 + 真实合成）
+# 时间：2026-11-16 20:16~20:32   证据来源：本轮 AstrBot 运行日志，按 aling-voice 过滤
+#
+# 点歌句 → 是否触发（正例必须触发，反例必须不触发）
+sing-intent hit=True title='小星星'      auto=True text='唱首小星星'      umo=napcat:GroupMessage:555111
+sing-intent hit=True title='两只老虎'    auto=True text='来一首两只老虎'  umo=napcat:GroupMessage:555111
+sing-intent hit=True title='生日快乐'    auto=True text='唱首生日快乐'    umo=napcat:GroupMessage:555111
+# /唱歌 两只老虎（口令链路，不经过 sing-intent）
+sing-done via=command title='两只老虎' segments=1/1 umo=napcat:GroupMessage:555111
+sing-intent hit=True title=''            auto=True text='唱首歌'          umo=napcat:GroupMessage:555111
+sing-intent hit=True title=''            auto=True text='来一首吧'        umo=napcat:GroupMessage:555111
+sing-intent hit=True title=''            auto=True text='给我唱一段'      umo=napcat:GroupMessage:555111
+#
+# 反例句：本轮日志里 sing-intent 的 text= 中，以下四句出现 0 次（即全部没有触发唱歌）
+#   text='不要唱歌，聊聊天吧'  -> 0
+#   text='你会唱歌吗'          -> 0
+#   text='别唱了，安静会儿'    -> 0
+#   text='他唱得真好听'        -> 0
+# 反例对应的回复都是普通语音：voice-batch … voice_id=longanxiaoxin（3.0-tts-flash 日常链路）
