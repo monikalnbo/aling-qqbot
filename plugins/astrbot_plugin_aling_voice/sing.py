@@ -16,6 +16,11 @@ from __future__ import annotations
 
 import re
 
+try:  # 作为包导入（插件运行时）
+    from .lyrics import split_singer_from_title
+except ImportError:  # 单测里把本目录放进 sys.path 直接 import sing
+    from lyrics import split_singer_from_title
+
 # 明确「不是点歌」的说法（先判断；命中即不唱）
 _NEGATIVE = [
     # 否定：不要唱 / 别唱了 / 甭来一首 / 我不听歌
@@ -83,20 +88,26 @@ def detect_singing(text: str, extra_words: list[str] | None = None, extra_regex:
 
 
 def _extract_title(text: str) -> str:
-    """从点歌句里抠歌名；抠不出来返回空串（由 LLM 自己挑一首）。"""
-    m = re.search(r"《([^》]{1,20})》", text)
+    """从点歌句里抠歌名（已剥离歌手名）；抠不出来返回空串。"""
+    m = re.search(r"《([^》]{1,25})》", text)
     if m:
         return m.group(1).strip()
 
     # 「点歌 晴天」「点歌：晴天」
-    m = re.search(r"点歌[\s：:，,]*([^\s，。,.!?！？]{1,16})", text)
-    if m and m.group(1) not in _SING_WORDS:
-        return m.group(1).strip()
+    m = re.search(r"点歌[\s：:，,]*([^\s，。,.!?！？]{1,16}(?:[\s　]+[^\s，。,.!?！？]{1,16})?)", text)
+    if m:
+        rest = m.group(1).strip()
+        parts = [x for x in re.split(r"[\s　]+", rest) if x]
+        if len(parts) >= 2:            # 「点歌 孙燕姿 遇见」→ 歌名是后一个
+            return parts[1]
+        title, _singer = split_singer_from_title(rest)
+        if title and title not in _SING_WORDS:
+            return title
 
     # 「来一首小星星」「唱两只老虎」「点首晴天」
     m = re.search(
         r"(?:唱|来|点|听)(?:一|两|几|这|那)?(?:首|支|曲|段|个|句|遍)?\s*"
-        r"([一-龥A-Za-z0-9·\-]{1,16})",
+        r"([一-龥A-Za-z0-9·\-]{1,24})",
         text,
     )
     if m:
@@ -104,9 +115,10 @@ def _extract_title(text: str) -> str:
         cand = _LEAD.sub("", cand)
         cand = re.sub(r"(模式|一下|一遍|一点|了|吧|呀|啊|呗)$", "", cand).strip()
         # 抠出来的只是「歌」「首歌」这类词，说明用户没点具体歌名
-        if (cand and cand not in _SING_WORDS and len(cand) >= 2
-                and not cand.startswith(("歌", "唱", "曲", "听"))):
-            return cand
+        title, _singer = split_singer_from_title(cand)
+        if (title and title not in _SING_WORDS and len(title) >= 2
+                and not title.startswith(("歌", "唱", "曲", "听"))):
+            return title
     return ""
 
 
