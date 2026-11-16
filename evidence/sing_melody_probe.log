@@ -1,0 +1,31 @@
+唱歌服务「按指定原曲旋律唱」可行性实测  (复跑离线分析)
+A_control_1.mp3: {"dur": 45.02, "voiced_s": 42.37, "sustain": 49, "sustain_s": 24.27, "prange": 29.1, "std": 8.4, "f0": 296} md5=9c6a9f980d14
+A_control_2.mp3: {"dur": 45.05, "voiced_s": 38.14, "sustain": 42, "sustain_s": 16.72, "prange": 34.6, "std": 10.5, "f0": 333} md5=4f48be5c7d96
+B_extra_fields.mp3: {"dur": 45.02, "voiced_s": 40.92, "sustain": 48, "sustain_s": 22.24, "prange": 29.8, "std": 9.5, "f0": 333} md5=030cd1d18059
+C_prompt_twotiger.mp3: {"dur": 30.02, "voiced_s": 22.04, "sustain": 26, "sustain_s": 12.17, "prange": 34.7, "std": 11.7, "f0": 333} md5=4bf1fd22ce92
+C_prompt_birthday.mp3: {"dur": 30.02, "voiced_s": 20.98, "sustain": 28, "sustain_s": 16.46, "prange": 34.5, "std": 11.4, "f0": 356} md5=0fb3d4b58a9f
+D_ref_source.mp3: {"dur": 45.02, "voiced_s": 41.46, "sustain": 57, "sustain_s": 28.39, "prange": 24.8, "std": 7.5, "f0": 400} md5=5f1e5522a590
+D_ref_audio.mp3: {"dur": 180.02, "voiced_s": 171.19, "sustain": 173, "sustain_s": 77.46, "prange": 28.5, "std": 8.9, "f0": 390} md5=519bf992554d
+
+旋律轮廓相关（40 段中位音高，去均值后余弦；1=完全一致，0=无关）
+  A_control_1.mp3 vs A_control_2.mp3: 0.249
+  A_control_1.mp3 vs B_extra_fields.mp3: 0.100
+  A_control_1.mp3 vs C_prompt_twotiger.mp3: -0.158
+  A_control_1.mp3 vs C_prompt_birthday.mp3: -0.032
+  A_control_1.mp3 vs D_ref_source.mp3: 0.062
+  A_control_1.mp3 vs D_ref_audio.mp3: -0.066
+  A_control_2.mp3 vs B_extra_fields.mp3: 0.153
+  A_control_2.mp3 vs C_prompt_twotiger.mp3: -0.168
+  A_control_2.mp3 vs C_prompt_birthday.mp3: -0.032
+  A_control_2.mp3 vs D_ref_source.mp3: 0.025
+  A_control_2.mp3 vs D_ref_audio.mp3: 0.058
+  B_extra_fields.mp3 vs C_prompt_twotiger.mp3: 0.046
+  B_extra_fields.mp3 vs C_prompt_birthday.mp3: -0.098
+  B_extra_fields.mp3 vs D_ref_source.mp3: 0.032
+  B_extra_fields.mp3 vs D_ref_audio.mp3: 0.127
+  C_prompt_twotiger.mp3 vs C_prompt_birthday.mp3: -0.070
+  C_prompt_twotiger.mp3 vs D_ref_source.mp3: -0.116
+  C_prompt_twotiger.mp3 vs D_ref_audio.mp3: -0.087
+  C_prompt_birthday.mp3 vs D_ref_source.mp3: -0.011
+  C_prompt_birthday.mp3 vs D_ref_audio.mp3: 0.166
+  D_ref_source.mp3 vs D_ref_audio.mp3: -0.008
