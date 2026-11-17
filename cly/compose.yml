@@ -1,0 +1,58 @@
+# 第二个机器人 cly · NapCat + AstrBot 独立部署
+#
+# 与第一台（./astrbot/compose.yml）完全隔离：自己的容器名、端口、数据目录、网络、
+# 登录态。两台互不共用数据卷，不会互踢下线。
+#
+# 容器名：
+#   cly          NapCat（QQ 协议端，QQ 登录态在这里）
+#   astrbot-cly  AstrBot（聊天大脑）
+#
+# 端口（全部只绑 127.0.0.1，不暴露公网）：
+#   NapCat WebUI      127.0.0.1:6285
+#   NapCat OneBot WS  127.0.0.1:3010   （默认不开，保留给排错）
+#   AstrBot WebUI     127.0.0.1:6186
+#   AstrBot 反向 WS   127.0.0.1:6190   （cly 容器的 onebot11.json 连这里）
+#
+# 用法：
+#   cd cly
+#   docker compose up -d
+#   docker compose logs -f astrbot-cly
+
+services:
+  cly:
+    image: mlikiowa/napcat-docker:latest
+    container_name: cly
+    restart: unless-stopped
+    environment:
+      - NAPCAT_UID=${NAPCAT_UID:-0}
+      - NAPCAT_GID=${NAPCAT_GID:-0}
+      - MODE=ws
+      - TZ=Asia/Shanghai
+    ports:
+      - "127.0.0.1:6285:6099"
+      - "127.0.0.1:3010:3001"
+    volumes:
+      - ./data/napcat/qq:/app/.config/QQ
+      - ./data/napcat/config:/app/napcat/config
+      - ./data/napcat/plugins:/app/napcat/plugins
+    networks:
+      - cly_network
+
+  astrbot-cly:
+    image: soulter/astrbot:latest
+    container_name: astrbot-cly
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+    ports:
+      - "127.0.0.1:6186:6185"
+      - "127.0.0.1:6190:6190"
+    volumes:
+      - ./data/astrbot:/AstrBot/data
+    networks:
+      - cly_network
+
+networks:
+  cly_network:
+    driver: bridge

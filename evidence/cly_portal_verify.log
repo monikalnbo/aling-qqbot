@@ -1,0 +1,35 @@
+== cly 扫码看板真机验证 2026-11-17 22:42:57 CST ==
+
+-- 1. HTTPS 页面 --
+GET /qqqr-cly-<token>/ -> 200, 5124 bytes
+-- 2. 无 token / 错 token --
+GET /qqqr-cly/ -> 404
+GET /qqqr-cly-000..000/ -> 404
+GET /qqqr-<旧前缀>新token/ -> 404
+-- 3. 状态 JSON --
+{"ok": true, "phase": "waiting", "label": "等待扫码", "is_login": false, "accepted": false, "uin": "", "qr_url": "https://txz.qq.com/p?k=fKk4UsyUhPHIPfDYgBNvZNDLWpm3Wztl&f=1600001615", "age": 0, "ttl": 120, "remain": 120, "error": "", "checked_at": "2026-11-17 22:42:58"}
+-- 4. 图片接口响应头 --
+HTTP/1.1 200 OK
+Content-Type: image/png
+Content-Length: 2365
+Cache-Control: no-store
+X-Robots-Tag: noindex, nofollow
+Referrer-Policy: no-referrer
+Cache-Control: no-store
+PNG (410, 410) PNG
+-- 5. 自动换码观察（见 cly_qr_rotation.log） --
+22:39:55 107 13 waiting md5=0cdf6252c79d6a6ccda208fbf3e4d5fc url=https://txz.qq.com/p?k=BCK9yS861kkcsrFAnaiU5BYYNl7szlyp&f=1600001615
+22:40:11 0 120 waiting md5=022c84453e8c1d8684b4d5de734ec1f7 url=https://txz.qq.com/p?k=*6q2OUWsDmDC8YVcOecLFPzdbN7q5YZa&f=1600001615
+-- 6. 第一台回归 --
+旧看板 HTTPS -> 200
+{"ok": true, "phase": "logged_in", "label": "已登录成功，可以关掉这个页面了", "is_login": true, "accepted
+-- 7. 服务与容器 --
+active
+active
+active
+enabled
+enabled
+astrbot-cly	Up 7 minutes	127.0.0.1:6190->6190/tcp, 127.0.0.1:6186->6185/tcp
+cly	Up 7 minutes	127.0.0.1:3010->3001/tcp, 127.0.0.1:6285->6099/tcp
+astrbot	Up 24 hours	127.0.0.1:6185->6185/tcp, 127.0.0.1:6199->6199/tcp
+napcat	Up 36 hours	127.0.0.1:3001->3001/tcp, 127.0.0.1:6099->6099/tcp
