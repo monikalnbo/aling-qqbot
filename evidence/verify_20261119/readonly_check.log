@@ -26,3 +26,15 @@ LISTEN 0      4096       127.0.0.1:6199       0.0.0.0:*    users:(("docker-proxy
 LISTEN 0      4096       127.0.0.1:6185       0.0.0.0:*    users:(("docker-proxy",pid=464290,fd=4))                                                                                                                                                                                                                           
 LISTEN 0      4096       127.0.0.1:6186       0.0.0.0:*    users:(("docker-proxy",pid=2480601,fd=4))                                                                                                                                                                                                                          
 LISTEN 0      4096       127.0.0.1:6190       0.0.0.0:*    users:(("docker-proxy",pid=2480587,fd=4))                                                                                                                                                                                                                          
+== 推送后最终复测 2026-11-19 16:56:00
+cly 页面 200 5124B
+cly 错路径 404
+第一台 200
+active
+active
+active
+astrbot-cly Up 42 hours
+cly Up 42 hours
+astrbot Up 2 days
+napcat Up 3 days
+{"ok": true, "phase": "waiting", "label": "等待扫码", "is_login": false, "accepted": false, "uin": "", "qr_url": "https://txz.qq.com/p?k=M*QA-8ph65avz3Z2cT4osXehNoKYZhmd&f=1600001615", "age": 0, "ttl": 120, "remain": 120, "error": "", "checked_at": "2026-11-19 16:56:01"}
