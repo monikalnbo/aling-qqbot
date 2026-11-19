@@ -1,0 +1,6 @@
+name: astrbot_plugin_cly_guard
+display_name: cly 托管守卫
+desc: 没填他自己的 DeepSeek key 就不调用任何付费接口，只回一句友好提示。
+version: v1.0.0
+author: cly-host
+repo: ""

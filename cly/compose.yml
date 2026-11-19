@@ -44,7 +44,7 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Asia/Shanghai
-      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      # 不注入任何 DEEPSEEK_API_KEY：cly 只用设置页里主人自己填的 key
     ports:
       - "127.0.0.1:6186:6185"
       - "127.0.0.1:6190:6190"

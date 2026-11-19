@@ -48,3 +48,9 @@ backup/
 
 # ===== 示例配置（不含真实凭据，允许提交）=====
 !astrbot/data/astrbot/config/astrbot_plugin_aling_voice_config.example.json
+
+# ===== cly 运行时数据 / 托管密钥 / 设置页口令 =====
+cly/data/
+.cly_set_token
+.qqqr_cly_token
+.qqqr_token

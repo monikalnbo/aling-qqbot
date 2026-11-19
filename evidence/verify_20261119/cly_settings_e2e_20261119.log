@@ -1,0 +1,79 @@
+2026-11-19 17:18:14
+== 服务/容器 ==
+cly-set-portal qqqr-portal qqqr-cly-portal nginx active
+ active
+ active
+ active
+cly-set-portal qqqr-portal qqqr-cly-portal enabled
+ enabled
+ enabled
+astrbot-cly	Up 12 seconds
+cly-guardtest	Up 42 hours
+cly	Up 43 hours
+astrbot	Up 2 days
+napcat	Up 3 days
+
+== 设置页 HTTPS ==
+/cly-set-raeD1fm4ievtXqsqPJLiMixKlg/ -> 200 text/html; charset=utf-8 8135B
+Cache-Control: no-store
+Cache-Control: no-store
+/cly-set-wrongtoken/ -> 404 text/html 153B
+Cache-Control: no-store, must-revalidate
+/cly-set/ -> 404 text/html 153B
+Cache-Control: no-store, must-revalidate
+
+== 扫码页 ==
+https://lnboself.cn/qqqr-wCgQjrZVwdg3oZxBQlts9Fka/ -> 200 5123B
+https://lnboself.cn/qqqr-cly-Gty6Ci22RGiEGNH9YTGy8mjR/ -> 200 5124B
+
+== 第一台看板 phase ==
+phase === 'logged_in' ? 'done' : '';
+phase === 'logged_in' ? 'ok'
+phase === 'pending_confirm' ? 'pending'
+
+== cly 扫码页 phase ==
+phase === 'logged_in' ? 'done' : '';
+phase === 'logged_in' ? 'ok'
+phase === 'pending_confirm' ? 'pending'
+
+== nginx -t ==
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+== 二维码页状态（真机）==
+/qqqr-wCgQjrZVwdg3oZxBQlts9Fka {"ok": true, "phase": "logged_in", "label": "已登录成功，可以关掉这个页面了", "is_login": true, "accepted": false, "uin": "", "qr_url": "", "age": 0, "ttl": 120, "remain": 0, "error": "", "checked_at": "2026-11-19 17:18:39"}
+/qqqr-cly-Gty6Ci22RGiEGNH9YTGy8mjR {"ok": true, "phase": "waiting", "label": "等待扫码", "is_login": false, "accepted": false, "uin": "", "qr_url": "https://txz.qq.com/p?k=KDgNjU4CH2rHduWQBRm-7TijcgQQa8lo&f=1600001615", "age": 0, "ttl": 120, "remain": 120, "error": "", "checked_at": "2026-11-19 17:18:39"}
+
+== 设置页字段/生效核对（假 key 往返已清空）==
+{
+  "deepseek_key": {
+    "label": "DeepSeek Key",
+    "filled": false,
+    "shown": ""
+  },
+  "deepseek_model": {
+    "label": "DeepSeek 模型",
+    "filled": true,
+    "shown": "deepseek-chat"
+  },
+  "voice_key": {
+    "label": "语音 Key",
+    "filled": false,
+    "shown": ""
+  },
+  "voice_base_url": {
+    "label": "语音接口地址",
+    "filled": true,
+    "shown": "https://maas.qianwenaiapi.com"
+  },
+  "voice_model": {
+    "label": "语音模型",
+    "filled": true,
+    "shown": "qwen-audio-3.0-tts-flash"
+  },
+  "_voice_check": {
+    "voice_ok": false,
+    "checked_at": "2026-11-19 17:17:50",
+    "msg": "未填写"
+  }
+}
