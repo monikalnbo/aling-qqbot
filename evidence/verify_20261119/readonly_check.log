@@ -1,0 +1,28 @@
+== 2026-11-19 16:52:02 二次核验（只读，不改配置）
+-- HTTPS 页面
+cly 页面 200 text/html; charset=utf-8 5124B
+cly 错误路径 404
+cly 无路径根 200
+第一台页面 200
+第一台错误路径 404
+-- 服务
+active
+active
+enabled
+enabled
+-- 容器
+/cly running restarts=0 started=2026-11-17T14:35:27.656048444Z
+/astrbot-cly running restarts=0 started=2026-11-17T15:02:50.42019452Z
+/napcat running restarts=0 started=2026-11-16T02:29:43.385625941Z
+/astrbot running restarts=0 started=2026-11-16T15:02:11.595292415Z
+-- 端口
+LISTEN 0      4096       127.0.0.1:6099       0.0.0.0:*    users:(("docker-proxy",pid=3690524,fd=4))                                                                                                                                                                                                                          
+LISTEN 0      5          127.0.0.1:18123      0.0.0.0:*    users:(("python3",pid=3696000,fd=3))                                                                                                                                                                                                                               
+LISTEN 0      5          127.0.0.1:18124      0.0.0.0:*    users:(("python3",pid=2442483,fd=3))                                                                                                                                                                                                                               
+LISTEN 0      4096       127.0.0.1:3010       0.0.0.0:*    users:(("docker-proxy",pid=2438123,fd=4))                                                                                                                                                                                                                          
+LISTEN 0      4096       127.0.0.1:3001       0.0.0.0:*    users:(("docker-proxy",pid=3690537,fd=4))                                                                                                                                                                                                                          
+LISTEN 0      4096       127.0.0.1:6285       0.0.0.0:*    users:(("docker-proxy",pid=2438110,fd=4))                                                                                                                                                                                                                          
+LISTEN 0      4096       127.0.0.1:6199       0.0.0.0:*    users:(("docker-proxy",pid=464275,fd=4))                                                                                                                                                                                                                           
+LISTEN 0      4096       127.0.0.1:6185       0.0.0.0:*    users:(("docker-proxy",pid=464290,fd=4))                                                                                                                                                                                                                           
+LISTEN 0      4096       127.0.0.1:6186       0.0.0.0:*    users:(("docker-proxy",pid=2480601,fd=4))                                                                                                                                                                                                                          
+LISTEN 0      4096       127.0.0.1:6190       0.0.0.0:*    users:(("docker-proxy",pid=2480587,fd=4))                                                                                                                                                                                                                          

@@ -1,0 +1,11 @@
+-- 第一台看板状态
+{"ok": true, "phase": "logged_in", "label": "已登录成功，可以关掉这个页面了", "is_login": true, "accepted": false, "uin": "", "qr_url": "", "age": 0, "ttl": 120, "remain": 0, "error": "", "checked_at": "2026-11-19 16:55:12"}
+-- 第一台 NapCat 登录用户
+-- cly 看板 pid/启动
+NRestarts=0
+ExecMainStartTimestamp=Tue 2026-11-17 22:38:05 CST
+ActiveEnterTimestamp=Tue 2026-11-17 22:38:05 CST
+-- nginx
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+active
